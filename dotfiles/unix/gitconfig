@@ -8,3 +8,5 @@
 	compression = -1
 [push]
 	default = current
+[pull]
+        rebase = false
