@@ -24,6 +24,12 @@ function step {
     message $green "--> Done"
 }
 
+function step_no_redirect {
+    message $cyan "==> ${1}"
+    ${*:2}
+    message $green "--> Done"
+}
+
 message $yellow "!!! Detailed command output is being written to ${output}"
 
 function system_step {
@@ -96,12 +102,12 @@ function shell_step {
     chsh -s "$(which zsh)"
     sudo chsh -s "$(which zsh)"
 }
-step "Configuring default shell" shell_step
+step_no_redirect "Configuring default shell" shell_step
 
 function root_passwd_step {
-    sudo passwd
+    sudo passwd -q
 }
-step "Configuring root password" root_passwd_step
+step_no_redirect "Configuring root password" root_passwd_step
 
 function cleanup_step {
     sudo apt-get clean ${apt_args}
