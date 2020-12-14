@@ -62,7 +62,7 @@ function fonts_step {
     curl -sSfL "https://download.jetbrains.com/fonts/JetBrainsMono-2.001.zip" 1>"${font_zip}" 2>>"${output}"
     unzip -d "${tmp_font_dir}" "${font_zip}"
 
-    mv "${tmp_font_dir}/ttf/No ligatures/"* "${font_dir}"
+    sudo mv "${tmp_font_dir}/ttf/No ligatures/"* "${font_dir}"
     fc-cache -v
 
     rm -rf "${font_zip}" "${tmp_font_dir}"
