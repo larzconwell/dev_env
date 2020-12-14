@@ -57,7 +57,8 @@ function fonts_step {
     local tmp_font_dir="${tmp}/font"
     local font_dir="/usr/local/share/fonts/truetype/JetBrainsMono"
 
-    mkdir -p "${tmp_font_dir}" "${font_dir}"
+    mkdir -p "${tmp_font_dir}"
+    sudo mkdir -p "${font_dir}"
 
     curl -sSfL "https://download.jetbrains.com/fonts/JetBrainsMono-2.001.zip" 1>"${font_zip}" 2>>"${output}"
     unzip -d "${tmp_font_dir}" "${font_zip}"
