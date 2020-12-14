@@ -1,0 +1,172 @@
+# Load features
+autoload -U compinit && compinit
+autoload -U promptinit && promptinit
+autoload -U colors && colors
+autoload -Uz add-zsh-hook
+autoload -Uz vcs_info
+
+# Options
+bindkey -e
+setopt auto_cd
+setopt auto_pushd
+setopt pushd_ignore_dups
+setopt complete_aliases
+setopt complete_in_word
+setopt hist_ignore_all_dups
+setopt hist_ignore_space
+setopt share_history
+setopt interactive_comments
+setopt auto_continue
+setopt prompt_subst
+setopt c_bases
+setopt c_precedences
+setopt multios
+unsetopt beep
+
+# Keybindings
+bindkey "^[[H"  beginning-of-line
+bindkey "^[[F"  end-of-line
+bindkey "^[[3~" delete-char
+
+# Environment
+export TERM="xterm-256color"
+export ZSHRC="${HOME}/.zshrc"
+export HISTFILE="${HOME}/.zsh_history"
+export HISTSIZE=3000
+export SAVEHIST=2000
+export PATH="/usr/local/bin:/usr/local/sbin:${PATH}"
+export EDITOR="vim"
+export PAGER="less"
+export LANG="en_US.UTF-8"
+
+# Feature configuration
+zstyle :compinstall filename "${ZSHRC}"
+zstyle ':vcs_info:git:*' check-for-changes true
+zstyle ':vcs_info:git:*' stagedstr "+"
+zstyle ':vcs_info:git:*' unstagedstr "-"
+zstyle ':vcs_info:git:*' formats '(%b%c%u)'
+zstyle ':vcs_info:git:*' actionformats '(%a:%b%c%u)'
+
+# Prompt
+PROMPT=" %{${fg[cyan]}%}%~%{${reset_color}%}%{${fg[magenta]}%}%1(v| %1v%f|)%{${reset_color}%} %# "
+RPROMPT="%(?..%{${fg[red]}%}%?)%{${reset_color}%}"
+
+# Kitty
+kitty + complete setup zsh | source /dev/stdin
+
+# Go
+export PATH="$(go env GOPATH)/bin:${PATH}"
+
+# Rust
+export PATH="${HOME}/.cargo/bin:${PATH}"
+
+# Command overrides
+alias mkdir="mkdir -p"
+alias less="less -R"
+
+# Git
+alias gst="git status"
+alias gd="git diff"
+alias ga="git add"
+alias gc="git commit -v"
+function gp {
+    git push origin "$(git symbolic-ref --short HEAD)" ${*}
+}
+function gcl {
+    if [[ "${1}" == git@* ]] || [[ "${1}" == git://* ]] || [[ "${1}" == *.git ]]; then
+        git clone ${*}
+    elif [[ "${1}" == */* ]]; then
+        git clone "git@github.com:${1}.git" ${@:2}
+    else
+        git clone "git@github.com:$(git config user.github)/${1}.git" ${@:2}
+    fi
+}
+function gco {
+    branch="${1}"
+    if [[ "${branch}" == "" ]]; then
+        branch="master"
+    fi
+
+    git checkout "${branch}" ${@:2}
+    if [[ $? != 0 ]]; then
+        git checkout -b "${branch}" ${@:2}
+    fi
+}
+function _gco_complete {
+    branches="$(git branch -a | \grep remotes - | sed 's#remotes/[a-zA-Z0-9_-]*/##g' | awk '!/HEAD/')"
+
+    compadd "${(@)${(f)${branches}}#??}"
+}
+compdef _gco_complete gco
+
+# Custom commands
+alias -g prog="cd ${HOME}/Programming"
+alias -g goprog="cd ${HOME}/Programming/go"
+alias vimupdate="vim +PlugUpdate +PlugClean!"
+function ports {
+    local items="$(sudo lsof -n -i -P | tr -s " " | cut -d " " -f 2,9,10 | \grep "LISTEN")"
+
+    printf "%-10s %-20s %s\n" "PID" "ADDRESS" "COMMAND"
+    if [[ "${items}" == "" ]]; then
+        return
+    fi
+
+    while read item; do
+        pid="$(echo "${item}" | awk '{print $1}')"
+        addr="$(echo "${item}" | awk '{print $2}')"
+        cmd="$(ps -o command "${pid}" | sed 1d)"
+
+        printf "%-10s %-20s %s\n" "${pid}" "${addr}" "${cmd}"
+    done <<< "${items}"
+}
+
+# System specifics
+os="$(uname -s | tr 'A-Z' 'a-z')"
+grep_args="-nHr --color=auto --exclude-dir='\.git' --exclude-dir='dist' --exclude-dir='node_modules' --exclude-dir='log' --exclude-dir='vendor' --exclude-dir='tmp' --exclude-dir='temp'"
+case "${os}" in
+    darwin)
+        alias update="brew update"
+        alias upgrade="brew update && brew upgrade"
+        alias install="brew install"
+        alias uninstall="brew uninstall"
+        alias search="brew search"
+
+        alias qls="\ls -AG"
+        alias ls="\ls -ovAGh"
+        alias grep="ggrep ${grep_args}"
+        ;;
+    linux)
+        alias pbcopy="xsel --clipboard --input"
+        alias pbpaste="xsel --clipboard --output"
+
+        alias update="sudo apt update"
+        alias upgrade="sudo apt update && sudo apt upgrade"
+        alias install="sudo apt install"
+        alias uninstall="sudo apt purge"
+        alias search="apt list"
+
+        alias qls="\ls -A --color=auto"
+        alias ls="\ls -ovAh --color=auto"
+        alias grep="grep ${grep_args}"
+        ;;
+esac
+
+# Refresh Git before prompting
+function precmd {
+    psvar=()
+    vcs_info
+    [[ -n "${vcs_info_msg_0_}" ]] && psvar[1]="${vcs_info_msg_0_}"
+}
+
+# Ran when changing directories
+function chpwd {
+    qls
+}
+
+# Private configuration
+if [[ -f "${HOME}/.zshrc_private" ]]; then
+    source "${HOME}/.zshrc_private"
+fi
+
+# Remove duplicate PATH entries.
+export PATH="$(echo -n "${PATH}" | awk -v RS=: '{if (!arr[$0]++) {printf("%s%s", !ln++ ? "" : ":", $0)}}')"
