@@ -112,5 +112,5 @@ step "Cleaning up apt" cleanup_step
 message $green "==> Setup complete, a restart is advised"
 message $green "==> Additional manual steps should be taken:"
 message $green "-->   Set the systems monospace font to JetBrains Mono NL"
-message $green "-->   run `vimupdate`"
-message $green "-->   run `:GoInstallBinaries` inside `vim`"
+message $green "-->   run vimupdate"
+message $green "-->   run :GoInstallBinaries inside vim"
