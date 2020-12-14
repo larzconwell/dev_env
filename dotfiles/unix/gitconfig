@@ -1,10 +1,12 @@
 [user]
 	name = Larz Conwell
 	email = larzconwell@gmail.com
-    github = larzconwell
+	github = larzconwell
 [color]
 	ui = true
 [core]
 	compression = -1
 [push]
 	default = current
+[pull]
+	rebase = false
