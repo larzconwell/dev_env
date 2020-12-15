@@ -34,6 +34,9 @@ set wildignore+=node_modules,.git,log,vendor,tmp,temp,*.so,*.o,*.a,*.test
 set wildmenu
 set wildmode=list:longest,full
 set nowrap
+set noerrorbells
+set novisualbell
+set t_vb=
 let g:skipview_files = ['\.git', 'node_modules', 'log', 'vendor', 'tmp', 'temp']
 
 " Formatting
