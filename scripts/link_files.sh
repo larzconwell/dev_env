@@ -17,12 +17,13 @@ function list_contains {
 function link_dir {
     local src="${1}"
     local dest="${2}"
-    local ignores="${3}"
+    local prefix="${3}"
+    local ignores="${4}"
     local name
 
     for path in "${src}/"*; do
         name="$(basename "${path}")"
-        local link="${dest}/.${name}"
+        local link="${dest}/${prefix}${name}"
 
         if [[ "$(list_contains "${ignores}" "${name}")" != "" ]]; then
             continue
@@ -47,7 +48,8 @@ function link_dir {
 
 src="${1}"
 dest="${2}"
+prefix="${3:-""}"
 
 if [[ -d "${src}" ]]; then
-    link_dir "${src}" "${dest}" ""
+    link_dir "${src}" "${dest}" "${prefix}" ""
 fi
