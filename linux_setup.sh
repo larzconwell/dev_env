@@ -55,7 +55,7 @@ step "Cloning ${name}" clone_step
 function link_step {
     "${dir}/scripts/link_files.sh" "${dir}/dotfiles/unix" "${HOME}" "."
     "${dir}/scripts/link_files.sh" "${dir}/dotfiles/linux" "${HOME}" "."
-    "${dir}/scripts/link_files.sh" "${dir}/sshd" "/etc/ssh/ssh_config.d"
+    sudo "${dir}/scripts/link_files.sh" "${dir}/sshd" "/etc/ssh/sshd_config.d"
 }
 step "Linking dotfiles" link_step
 
