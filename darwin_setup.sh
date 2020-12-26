@@ -59,8 +59,8 @@ function clone_step {
 step "Cloning ${name}" clone_step
 
 function link_step {
-    "${dir}/scripts/link_files.sh" "${dir}/dotfiles/unix" "${HOME}" "."
-    "${dir}/scripts/link_files.sh" "${dir}/dotfiles/darwin" "${HOME}" "."
+    "${dir}/scripts/link_files" "${dir}/dotfiles/unix" "${HOME}" "."
+    "${dir}/scripts/link_files" "${dir}/dotfiles/darwin" "${HOME}" "."
 }
 step "Linking dotfiles" link_step
 
