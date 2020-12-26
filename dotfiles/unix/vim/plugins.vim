@@ -22,5 +22,6 @@ Plug 'fatih/vim-go'
 Plug 'kchmck/vim-coffee-script'
 Plug 'cespare/vim-toml'
 Plug 'rust-lang/rust.vim'
+Plug 'PProvost/vim-ps1'
 
 call plug#end()

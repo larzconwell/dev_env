@@ -1,0 +1,61 @@
+#!/bin/bash
+set -e
+set -u
+
+cd "${HOME}"
+
+windows_home="/mnt/c/Users/${USER}"
+
+windows_ssh_dir="${windows_home}/.ssh"
+windows_ssh_key="${windows_ssh_dir}/id_rsa"
+
+ssh_dir="${HOME}/.ssh"
+ssh_key="${ssh_dir}/id_rsa"
+
+server_user="$(cat "${windows_home}/.server_user")"
+
+function shell {
+    set +e
+
+    bash -l -i
+    exit $?
+}
+
+if [[ ! -d "${windows_ssh_dir}" ]] || [[ ! -f "${windows_ssh_key}" ]]; then
+    echo "!!! An RSA SSH key is required at ${windows_ssh_key}" 1>&2
+    shell
+fi
+
+if [[ -f "${ssh_key}" ]]; then
+    windows_ssh_fingerprint="$(ssh-keygen -lf "${windows_ssh_key}" | awk '{ print $2 }')"
+    ssh_fingerprint="$(ssh-keygen -lf "${ssh_key}" | awk '{ print $2 }')"
+
+    if [[ "${windows_ssh_fingerprint}" != "${ssh_fingerprint}" ]]; then
+        rm "${ssh_key}"
+    fi
+fi
+
+if [[ ! -d "${ssh_dir}" ]] || [[ ! -f "${ssh_key}" ]]; then
+    mkdir -p "${ssh_dir}"
+    chmod 0755 "${ssh_dir}"
+
+    cp "${windows_ssh_key}.pub" "${ssh_key}.pub"
+    chmod 0644 "${ssh_key}.pub"
+
+    cp "${windows_ssh_key}" "${ssh_key}"
+    chmod 0600 "${ssh_key}"
+fi
+
+eval "$(keychain --eval --noask --nocolor --nogui --quiet --quick --timeout 300)"
+
+if [[ ! "$(ssh-add -l | awk '{ print $2 }')" =~ "$(ssh-keygen -lf "${ssh_key}" | awk '{ print $2 }')" ]]; then
+    ssh-add -q "${ssh_key}"
+fi
+
+set +e
+ssh -q -l "${server_user}" server
+
+if [[ $? == 255 ]]; then
+    echo "!!! Failed to connect to server" 1>&2
+    shell
+fi
