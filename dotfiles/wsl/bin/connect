@@ -41,6 +41,7 @@ if [[ ! -d "${ssh_dir}" ]] || [[ ! -f "${ssh_key}" ]]; then
 
     if [[ -f "${windows_ssh_dir}/config" ]]; then
         cp "${windows_ssh_dir}/config" "${ssh_dir}/config"
+        chmod 0644 "${ssh_dir}/config"
     fi
 
     cp "${windows_ssh_key}.pub" "${ssh_key}.pub"
