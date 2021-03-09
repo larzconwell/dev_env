@@ -72,7 +72,7 @@ step "Installing fonts" fonts_step
 function packages_step {
     brew cask install google-chrome docker kitty spectacle \
         postgres firefox 1password dropbox intellij-idea-ce \
-        adoptopenjdk8 zoomus slack keybase phantomjs tuple \
+        adoptopenjdk8 zoom slack keybase phantomjs tuple \
         notion tunnelblick browserstacklocal
 
     brew tap movableink/formulas
