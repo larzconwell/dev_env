@@ -34,7 +34,7 @@ export ZSHRC="${HOME}/.zshrc"
 export HISTFILE="${HOME}/.zsh_history"
 export HISTSIZE=3000
 export SAVEHIST=2000
-export PATH="/usr/local/bin:/usr/local/sbin:${PATH}"
+export PATH="/usr/local/bin:/usr/local/sbin:${HOME}/.local/bin:${PATH}"
 export EDITOR="vim"
 export PAGER="less"
 export LANG="en_US.UTF-8"
@@ -55,6 +55,11 @@ RPROMPT="%(?..%{${fg[red]}%}%?)%{${reset_color}%}"
 kitty + complete setup zsh | source /dev/stdin
 
 # Go
+manualGo="/usr/local/go"
+if [[ -d "${manualGo}" ]]; then
+    export GOROOT="${manualGo}"
+    export PATH="${GOROOT}/bin:${PATH}"
+fi
 export PATH="$(go env GOPATH)/bin:${PATH}"
 
 # Rust
