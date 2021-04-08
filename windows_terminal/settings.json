@@ -34,8 +34,8 @@
             "antialiasingMode": "cleartype",
             "colorScheme": "Dracula",
             "cursorShape": "bar",
-            "fontFace": "JetBrains Mono NL Regular",
-            "fontSize": 13,
+            "fontFace": "JetBrains Mono NL",
+            "fontSize": 12,
             "padding": "8,8,8,8",
             "tabColor": "#23242E",
             "useAcrylic": false
