@@ -105,7 +105,7 @@ Step "Installing fonts" {
 }
 
 Step "Installing packages" {
-    ExecBin { winget install --exact -q Google.Chrome }
+    ExecBin { winget install --exact -q Mozilla.Firefox }
     ExecBin { winget install --exact -q Git.Git }
     ExecBin { winget install --exact -q Microsoft.WindowsTerminal }
 }

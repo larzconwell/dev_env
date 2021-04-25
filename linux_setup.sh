@@ -78,11 +78,7 @@ function fonts_step {
 step "Installing fonts" fonts_step
 
 function packages_step {
-    local chrome_deb="${tmp}/chrome.deb"
-
-    curl -sSfL "https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb" 1>"${chrome_deb}" 2>>"${output}"
-
-    sudo apt-get install ${apt_args} "${chrome_deb}" kitty \
+    sudo apt-get install ${apt_args} firefox kitty \
         openssh-server vim-gtk p7zip xsel zsh clang-tidy \
         shellcheck cmake valgrind golang clang nasm \
         graphviz jq
@@ -94,8 +90,6 @@ function packages_step {
         "github.com/nsf/gocode" \
         "golang.org/x/tools/cmd/goimports" \
         "github.com/google/gops"
-
-    rm "${chrome_deb}"
 }
 step "Installing packages" packages_step
 
