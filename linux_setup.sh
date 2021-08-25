@@ -85,7 +85,7 @@ function packages_step {
 
     curl -sSfL "https://sh.rustup.rs" | sh -s -- -y --no-modify-path
 
-    curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b "$(go env GOPATH)/bin" "v1.33.0"
+    curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b "$(go env GOPATH)/bin" "v1.42.0"
     go get \
         "github.com/nsf/gocode" \
         "golang.org/x/tools/cmd/goimports" \
