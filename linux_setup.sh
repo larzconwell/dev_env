@@ -38,10 +38,10 @@ function system_step {
 }
 step "Upgrading system" system_step
 
-function git_step {
-    sudo apt-get install ${apt_args} git build-essential
+function dep_step {
+    sudo apt-get install ${apt_args} curl git build-essential
 }
-step "Installing git" git_step
+step "Installing dependencies" dep_step
 
 function clone_step {
     if [[ -d "${dir}" ]]; then
