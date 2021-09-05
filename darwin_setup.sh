@@ -80,7 +80,7 @@ function packages_step {
 
     brew install beeftornado/rmtree/brew-rmtree \
         rsync wget curl p7zip openssh openssl \
-        imagemagick cmake zsh gdb go \
+        imagemagick cmake zsh gdb go just \
         golangci/tap/golangci-lint rust python \
         clang-format vim ack graphviz jq icu4c libxslt \
         maven sbt geoip cassandra redis s3cmd hub node \

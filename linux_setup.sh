@@ -86,7 +86,9 @@ function packages_step {
         shellcheck cmake valgrind golang clang nasm \
         graphviz jq
 
+    export PATH="${HOME}/.cargo/bin:${PATH}"
     curl -sSfL "https://sh.rustup.rs" | sh -s -- -y --no-modify-path
+    cargo install -q just
 
     curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b "$(go env GOPATH)/bin" "v1.42.0"
     go get \
