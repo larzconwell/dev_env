@@ -7,10 +7,7 @@ cd "${HOME}"
 windows_home="/mnt/c/Users/${USER}"
 
 windows_ssh_dir="${windows_home}/.ssh"
-windows_ssh_key="${windows_ssh_dir}/id_rsa"
-
 ssh_dir="${HOME}/.ssh"
-ssh_key="${ssh_dir}/id_rsa"
 
 server_user="$(cat "${windows_home}/.server_user")"
 
@@ -21,8 +18,26 @@ function shell {
     exit $?
 }
 
-if [[ ! -d "${windows_ssh_dir}" ]] || [[ ! -f "${windows_ssh_key}" ]]; then
-    echo "!!! An RSA SSH key is required at ${windows_ssh_key}" 1>&2
+function find_windows_ssh_key {
+    local windows_pub_key
+    windows_pub_key="$(find "${windows_ssh_dir}" -name '*.pub' | head -n 1)"
+
+    if [[ "${windows_pub_key}" != "" ]]; then
+        basename "${windows_pub_key%.*}"
+    fi
+}
+
+if [[ ! -d "${windows_ssh_dir}" ]]; then
+    echo "!!! An SSH key is required in the directory ${windows_ssh_dir}" 1>&2
+    shell
+fi
+
+ssh_key_name="$(find_windows_ssh_key)"
+windows_ssh_key="${windows_ssh_dir}/${ssh_key_name}"
+ssh_key="${ssh_dir}/${ssh_key_name}"
+
+if [[ "${ssh_key_name}" == "" ]]; then
+    echo "!!! An SSH key is required in the directory ${windows_ssh_dir}" 1>&2
     shell
 fi
 
@@ -53,7 +68,7 @@ fi
 
 eval "$(keychain --eval --noask --nocolor --nogui --quiet --quick --timeout 300)"
 
-if [[ ! "$(ssh-add -l | awk '{ print $2 }')" =~ "$(ssh-keygen -lf "${ssh_key}" | awk '{ print $2 }')" ]]; then
+if [[ ! "$(ssh-add -l | awk '{ print $2 }')" =~ $(ssh-keygen -lf "${ssh_key}" | awk '{ print $2 }') ]]; then
     ssh-add -q "${ssh_key}"
 fi
 
