@@ -70,10 +70,10 @@ function fonts_step {
     mkdir -p "${tmp_font_dir}"
     sudo mkdir -p "${font_dir}"
 
-    curl -sSfL "https://download.jetbrains.com/fonts/JetBrainsMono-2.001.zip" 1>"${font_zip}" 2>>"${output}"
+    curl -sSfL "https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip" 1>"${font_zip}" 2>>"${output}"
     unzip -d "${tmp_font_dir}" "${font_zip}"
 
-    sudo mv "${tmp_font_dir}/ttf/No ligatures/"* "${font_dir}"
+    sudo mv "${tmp_font_dir}/fonts/ttf/"* "${font_dir}"
     fc-cache -v
 
     rm -rf "${font_zip}" "${tmp_font_dir}"
@@ -81,20 +81,41 @@ function fonts_step {
 step "Installing fonts" fonts_step
 
 function packages_step {
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+        $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+    sudo apt-get update
     sudo apt-get install ${apt_args} firefox kitty \
         openssh-server vim-gtk p7zip xsel zsh clang-tidy \
-        shellcheck cmake valgrind golang clang nasm \
-        graphviz jq
+        clang-format shellcheck cmake valgrind clang nasm \
+        docker-ce docker-ce-cli containerd.io \
+        graphviz jq tree imagemagick
+
+    docker_compose_bin="/usr/local/bin/docker-compose"
+    sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o "${docker_compose_bin}"
+    sudo chmod +x "${docker_compose_bin}"
+
+    snaps=("go" "blender" "gimp")
+    for pkg in ${snaps[@]}; do
+        sudo snap install "${pkg}"
+    done
 
     export PATH="${HOME}/.cargo/bin:${PATH}"
     curl -sSfL "https://sh.rustup.rs" | sh -s -- -y --no-modify-path
     cargo install -q just
 
-    curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b "$(go env GOPATH)/bin" "v1.42.0"
-    go get \
-        "github.com/nsf/gocode" \
-        "golang.org/x/tools/cmd/goimports" \
-        "github.com/google/gops"
+    curl -sSfL "https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh" | sh -s -- -b "$(go env GOPATH)/bin" "v1.43.0"
+
+    go_pkgs=(
+        "github.com/nsf/gocode@latest"
+        "github.com/google/gops@latest"
+        "golang.org/x/tools/cmd/goimports@latest"
+        "golang.org/x/tools/gopls@latest"
+    )
+    for pkg in ${go_pkgs[@]}; do
+        go install "${pkg}"
+    done
 }
 step "Installing packages" packages_step
 

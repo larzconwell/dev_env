@@ -107,10 +107,15 @@ function packages_step {
 
     gem install lunchy depl
 
-    go get \
-        "github.com/nsf/gocode" \
-        "golang.org/x/tools/cmd/goimports" \
-        "github.com/google/gops"
+    go_pkgs=(
+        "github.com/nsf/gocode@latest"
+        "github.com/google/gops@latest"
+        "golang.org/x/tools/cmd/goimports@latest"
+        "golang.org/x/tools/gopls@latest"
+    )
+    for pkg in ${go_pkgs[@]}; do
+        go install "${pkg}"
+    done
 }
 step "Installing packages" packages_step
 
