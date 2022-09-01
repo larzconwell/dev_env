@@ -197,6 +197,8 @@ step "Cleaning up apt" cleanup_step
 
 message $green "==> Setup complete, a restart is advised"
 message $green "==> Additional manual steps should be taken:"
+message $green "-->   Set Firefox and Chrome themes to Dracula"
+message $green "-->   Set Slack theme to Dracula"
 message $green "-->   Set the systems monospace font to JetBrains Mono"
 message $green "-->   run vimupdate"
 message $green "-->   run :GoInstallBinaries inside vim"
