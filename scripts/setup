@@ -120,7 +120,7 @@ function packages_step {
         brew install \
             docker docker-compose colima \
             gdb shellcheck cmake clang-format nasm \
-            wget curl openssh openssl ack p7zip tree \
+            grep wget curl openssh openssl ack p7zip tree \
             jq graphviz imagemagick vim zsh go just golangci-lint
 
         if [[ "${platform}" == "work" ]]; then
@@ -131,7 +131,7 @@ function packages_step {
                 intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
 
             brew install \
-                redis python icu4c libxslt geoip maven sbt scala@2.11 \
+                redis python icu4c libxslt geoip maven sbt scala@2.11 prometheus \
                 movableink/formulas/nsqlookupd movableink/formulas/nsqd \
                 movableink/formulas/nsqadmin movableink/formulas/nsqutils \
                 movableink/formulas/qt movableink/formulas/qtwebkit \
