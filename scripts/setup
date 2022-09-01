@@ -1,0 +1,202 @@
+#!/bin/bash
+set -e
+set -u
+
+platform="${1}"
+system="${platform}"
+if [[ "${system}" == "work" ]]; then
+    system="darwin"
+fi
+
+tmp="${TMPDIR:-/tmp}"
+name="dev_env"
+dir="${HOME}/Programming/${name}"
+output="${tmp}/${name}_setup"
+apt_args="--no-install-recommends --yes"
+
+cyan="$(tput setaf 6)"
+red="$(tput setaf 1)"
+yellow="$(tput setaf 3)"
+green="$(tput setaf 2)"
+
+function message {
+    echo "${*}$(tput sgr0)"
+    echo "${*:2}" &>>"${output}"
+}
+
+function step {
+    if [[ "${1}" == "no_redirect" ]]; then
+        message $cyan "==> ${2}"
+        ${*:3}
+    else
+        message $cyan "==> ${1}"
+        ${*:2} &>>"${output}"
+    fi
+
+    message $green "--> Done"
+}
+
+if [[ "${platform}" != "linux" ]] && [[ "${platform}" != "darwin" ]] && [[ "${platform}" != "work" ]]; then
+    message $red "Unknown platform given. Valid platforms are linux, darwin, and work"
+    rm "${output}"
+    exit 1
+fi
+
+message $yellow "!!! Detailed command output is being written to ${output}"
+
+function base_step {
+    if [[ "${system}" == "linux" ]]; then
+        sudo apt-get update ${apt_args}
+        sudo apt-get upgrade ${apt_args}
+
+        sudo apt-get install ${apt_args} curl git build-essential
+    else
+        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+        export PATH="/usr/local/bin:${PATH}"
+
+        brew analytics off
+        brew tap homebrew/cask-versions
+        brew tap homebrew/cask-fonts
+
+        brew install git
+    fi
+}
+step "Installing base requirements" base_step
+
+function clone_step {
+    git clone "git@github.com:larzconwell/${name}.git" "${dir}"
+}
+step "Cloning ${name}" clone_step
+
+function link_step {
+    "${dir}/scripts/link_files" "${dir}/dotfiles/unix" "${HOME}" "."
+    "${dir}/scripts/link_files" "${dir}/dotfiles/${system}" "${HOME}" "."
+}
+step "Linking dotfiles" link_step
+
+function fonts_step {
+    if [[ "${system}" == "linux" ]]; then
+        local font_zip="${tmp}/font.zip"
+        local tmp_font_dir="${tmp}/font"
+        local font_dir="/usr/local/share/fonts/truetype/JetBrainsMono"
+
+        mkdir -p "${tmp_font_dir}"
+        sudo mkdir -p "${font_dir}"
+
+        curl -sSfL "https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip" 1>"${font_zip}" 2>>"${output}"
+        unzip -d "${tmp_font_dir}" "${font_zip}"
+
+        sudo mv "${tmp_font_dir}/fonts/ttf/"* "${font_dir}"
+        fc-cache -v
+
+        rm -rf "${font_zip}" "${tmp_font_dir}"
+    else
+        brew install --cask --fontdir=/Library/Fonts font-jetbrains-mono
+    fi
+}
+step "Installing fonts" fonts_step
+
+function packages_step {
+    if [[ "${system}" == "linux" ]]; then
+        # Docker repository
+        sudo mkdir -p /etc/apt/keyrings
+        curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+        sudo apt-get update
+
+        sudo apt-get install ${apt_args} firefox kitty vim-gtk
+        sudo apt-get install ${apt_args} \
+            docker-ce docker-ce-cli containerd.io docker-compose-plugin \
+            shellcheck cmake clang clang-format valgrind nasm \
+            xsel p7zip tree jq graphviz imagemagick zsh
+
+        sudo snap install go
+        sudo snap install blender
+        sudo snap install --edge --classic just
+        sudo snap install golangci-lint
+    else
+        brew install --cask firefox kitty
+        brew install \
+            docker docker-compose colima \
+            gdb shellcheck cmake clang-format nasm \
+            wget curl openssh openssl ack p7zip tree \
+            jq graphviz imagemagick vim zsh go just golangci-lint
+
+        if [[ "${platform}" == "work" ]]; then
+            brew tap movableink/formulas
+
+            brew install --cask \
+                google-chrome spectacle postgres 1password dropbox \
+                intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
+
+            brew install \
+                redis python icu4c libxslt geoip maven sbt scala@2.11 \
+                movableink/formulas/nsqlookupd movableink/formulas/nsqd \
+                movableink/formulas/nsqadmin movableink/formulas/nsqutils \
+                movableink/formulas/qt movableink/formulas/qtwebkit \
+                movableink/formulas/apache-spark
+
+            sudo pip3 install awscli
+
+            curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+            source "${HOME}/.nvm/nvm.sh"
+
+            nvm install 16
+            nvm alias default 16
+
+            set +u
+            curl -fsSL https://get.rvm.io | bash -s - stable --ignore-dotfiles
+            source "${HOME}/.rvm/scripts/rvm"
+
+            rvm install 2.7
+            rvm --default use 2.7
+            set -u
+
+            gem install lunchy
+        else
+            brew install --cask blender
+        fi
+
+        # Docker Compose as a plugin
+        mkdir -p ~/.docker/cli-plugins
+        ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
+    fi
+
+    curl -fsSL https://sh.rustup.rs | sh -s - -y --no-modify-path
+
+    go_pkgs=(
+        "github.com/google/gops@latest"
+        "golang.org/x/tools/cmd/goimports@latest"
+        "golang.org/x/tools/gopls@latest"
+    )
+    for pkg in ${go_pkgs[@]}; do
+        go install "${pkg}"
+    done
+}
+step "Installing packages" packages_step
+
+function shell_step {
+    chsh -s "$(which zsh)"
+    sudo chsh -s "$(which zsh)"
+}
+step no_redirect "Configuring default shell" shell_step
+
+function root_passwd_step {
+    sudo passwd -q
+}
+step no_redirect "Configuring root password" root_passwd_step
+
+function cleanup_step {
+    if [[ "${system}" == "linux" ]]; then
+        sudo apt-get clean ${apt_args}
+        sudo apt-get autoremove ${apt_args}
+    fi
+}
+step "Cleaning up apt" cleanup_step
+
+message $green "==> Setup complete, a restart is advised"
+message $green "==> Additional manual steps should be taken:"
+message $green "-->   Set the systems monospace font to JetBrains Mono"
+message $green "-->   run vimupdate"
+message $green "-->   run :GoInstallBinaries inside vim"

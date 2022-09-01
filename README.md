@@ -2,20 +2,14 @@
 
 ### Setup
 
-On Linux (Ubuntu derivative) run:
 ```
-curl https://raw.githubusercontent.com/larzconwell/dev_env/main/linux_setup.sh | bash
-```
-
-On Darwin run:
-```
-curl https://raw.githubusercontent.com/larzconwell/dev_env/main/darwin_setup.sh | bash
+curl -L https://raw.githubusercontent.com/larzconwell/dev_env/main/scripts/setup | bash -s - <platform>
 ```
 
-On Windows download [`windows_setup.ps1`](https://raw.githubusercontent.com/larzconwell/dev_env/main/windows_setup.ps1) and then run:
-```
-powershell -NoLogo -ExecutionPolicy Bypass -File .\windows_setup.ps1
-```
+Where `<platform>` is one of the following
+- `linux` (x64 Ubuntu derivative)
+- `darwin` (m1)
+- `work` (x64 darwin)
 
 ### License
 MIT licensed, see [here](https://raw.githubusercontent.com/larzconwell/dev_env/main/LICENSE)
