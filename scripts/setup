@@ -109,7 +109,7 @@ function packages_step {
         sudo apt-get install ${apt_args} \
             docker-ce docker-ce-cli containerd.io docker-compose-plugin \
             shellcheck cmake clang clang-format valgrind nasm \
-            xsel p7zip tree jq graphviz imagemagick zsh
+            xsel p7zip tree jq graphviz imagemagick zsh pv
 
         sudo snap install go
         sudo snap install blender
@@ -121,7 +121,7 @@ function packages_step {
             docker docker-compose colima \
             gdb shellcheck cmake clang-format nasm \
             grep wget curl openssh openssl ack p7zip tree \
-            jq graphviz imagemagick vim zsh go just golangci-lint
+            jq graphviz imagemagick vim zsh pv go just golangci-lint
 
         if [[ "${platform}" == "work" ]]; then
             brew tap movableink/formulas
