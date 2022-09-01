@@ -54,15 +54,8 @@ RPROMPT="%(?..%{${fg[red]}%}%?)%{${reset_color}%}"
 # Kitty
 kitty + complete setup zsh | source /dev/stdin
 
-# Go
-manualGo="/usr/local/go"
-if [[ -d "${manualGo}" ]]; then
-    export GOROOT="${manualGo}"
-    export PATH="${GOROOT}/bin:${PATH}"
-fi
+# Language binaries
 export PATH="$(go env GOPATH)/bin:${PATH}"
-
-# Rust
 export PATH="${HOME}/.cargo/bin:${PATH}"
 
 # Command overrides
