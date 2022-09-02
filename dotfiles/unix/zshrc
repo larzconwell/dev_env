@@ -29,6 +29,15 @@ bindkey "^[[F"  end-of-line
 bindkey "^[[3~" delete-char
 
 # Environment
+os="$(uname -s | tr 'A-Z' 'a-z')"
+if [[ "${os}" == "darwin" ]]; then
+    brewdir="/usr/local"
+    if [[ "$(uname -m)" == "arm64" ]]; then
+        brewdir="/opt/homebrew"
+    fi
+
+    eval "$("${brewdir}"/bin/brew shellenv)"
+fi
 export TERM="xterm-256color"
 export ZSHRC="${HOME}/.zshrc"
 export HISTFILE="${HOME}/.zsh_history"
@@ -119,7 +128,6 @@ function ports {
 }
 
 # System specifics
-os="$(uname -s | tr 'A-Z' 'a-z')"
 grep_args="-nHr --color=auto --exclude-dir='\.git' --exclude-dir='dist' --exclude-dir='node_modules' --exclude-dir='log' --exclude-dir='vendor' --exclude-dir='tmp' --exclude-dir='temp'"
 case "${os}" in
     darwin)
@@ -132,12 +140,6 @@ case "${os}" in
         alias qls="\ls -AG"
         alias ls="\ls -ovAGh"
         alias grep="ggrep ${grep_args}"
-
-        brewdir="/usr/local"
-        if [[ "$(uname -m)" == "arm64" ]]; then
-            brewdir="/opt/homebrew"
-        fi
-        eval "$("${brewdir}"/bin/brew shellenv)"
         ;;
     linux)
         alias pbcopy="xsel --clipboard --input"

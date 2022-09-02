@@ -162,6 +162,8 @@ function packages_step {
             brew install --cask blender
         fi
 
+        echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
+
         mkdir -p "${HOME}/.docker/cli-plugins"
         ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
     fi
@@ -186,7 +188,7 @@ function shell_step {
 step no_redirect "Configuring default shell" shell_step
 
 function root_passwd_step {
-    sudo passwd -q
+    sudo passwd
 }
 step no_redirect "Configuring root password" root_passwd_step
 
