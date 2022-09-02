@@ -21,7 +21,7 @@ green="$(tput setaf 2)"
 
 function message {
     echo "${*}$(tput sgr0)"
-    echo "${*:2}" &>>"${output}"
+    echo "${*:2}" 1>>"${output}" 2>&1
 }
 
 function step {
@@ -30,7 +30,7 @@ function step {
         ${*:3}
     else
         message $cyan "==> ${1}"
-        ${*:2} &>>"${output}"
+        ${*:2} 1>>"${output}" 2>&1
     fi
 
     message $green "--> Done"
@@ -51,8 +51,13 @@ function base_step {
 
         sudo apt-get install ${apt_args} curl git build-essential
     else
-        bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-        export PATH="/usr/local/bin:${PATH}"
+        curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | NONINTERACTIVE=1 bash
+
+        local brewdir="/usr/local"
+        if [[ "$(uname -m)" == "arm64" ]]; then
+            brewdir="/opt/homebrew"
+        fi
+        eval "$("${brewdir}"/bin/brew shellenv)"
 
         brew analytics off
         brew tap homebrew/cask-versions
@@ -83,7 +88,7 @@ function fonts_step {
         mkdir -p "${tmp_font_dir}"
         sudo mkdir -p "${font_dir}"
 
-        curl -sSfL "https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip" 1>"${font_zip}" 2>>"${output}"
+        curl -fsSL "https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip" 1>"${font_zip}" 2>>"${output}"
         unzip -d "${tmp_font_dir}" "${font_zip}"
 
         sudo mv "${tmp_font_dir}/fonts/ttf/"* "${font_dir}"
@@ -98,7 +103,6 @@ step "Installing fonts" fonts_step
 
 function packages_step {
     if [[ "${system}" == "linux" ]]; then
-        # Docker repository
         sudo mkdir -p /etc/apt/keyrings
         curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
@@ -158,9 +162,8 @@ function packages_step {
             brew install --cask blender
         fi
 
-        # Docker Compose as a plugin
-        mkdir -p ~/.docker/cli-plugins
-        ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" ~/.docker/cli-plugins/docker-compose
+        mkdir -p "${HOME}/.docker/cli-plugins"
+        ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
     fi
 
     curl -fsSL https://sh.rustup.rs | sh -s - -y --no-modify-path

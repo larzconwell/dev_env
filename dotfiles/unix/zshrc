@@ -132,6 +132,12 @@ case "${os}" in
         alias qls="\ls -AG"
         alias ls="\ls -ovAGh"
         alias grep="ggrep ${grep_args}"
+
+        brewdir="/usr/local"
+        if [[ "$(uname -m)" == "arm64" ]]; then
+            brewdir="/opt/homebrew"
+        fi
+        eval "$("${brewdir}"/bin/brew shellenv)"
         ;;
     linux)
         alias pbcopy="xsel --clipboard --input"
