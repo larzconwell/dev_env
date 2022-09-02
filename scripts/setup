@@ -120,7 +120,7 @@ function packages_step {
         sudo snap install --edge --classic just
         sudo snap install golangci-lint
     else
-        brew install --cask firefox kitty
+        brew install --cask firefox kitty rectangle
         brew install \
             docker docker-compose colima \
             gdb shellcheck cmake clang-format nasm \
@@ -131,7 +131,7 @@ function packages_step {
             brew tap movableink/formulas
 
             brew install --cask \
-                google-chrome spectacle postgres 1password dropbox \
+                google-chrome postgres 1password dropbox \
                 intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
 
             brew install \
