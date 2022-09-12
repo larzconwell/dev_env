@@ -135,13 +135,11 @@ function packages_step {
                 intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
 
             brew install \
-                redis python icu4c libxslt geoip maven sbt scala@2.11 prometheus \
+                redis python icu4c libxslt geoip maven sbt scala@2.11 awscli prometheus \
                 movableink/formulas/nsqlookupd movableink/formulas/nsqd \
                 movableink/formulas/nsqadmin movableink/formulas/nsqutils \
                 movableink/formulas/qt movableink/formulas/qtwebkit \
                 movableink/formulas/apache-spark
-
-            sudo pip3 install awscli
 
             curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
             source "${HOME}/.nvm/nvm.sh"
