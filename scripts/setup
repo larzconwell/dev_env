@@ -168,7 +168,7 @@ function packages_step {
 
     export PATH="${HOME}/.cargo/bin:${PATH}"
     curl -fsSL https://sh.rustup.rs | sh -s - -y --no-modify-path
-    rustup component add rust-analyzer rls
+    rustup component add rust-analyzer
 
     go_pkgs=(
         "github.com/google/gops@latest"
