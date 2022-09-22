@@ -166,7 +166,9 @@ function packages_step {
         ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
     fi
 
+    export PATH="${HOME}/.cargo/bin:${PATH}"
     curl -fsSL https://sh.rustup.rs | sh -s - -y --no-modify-path
+    rustup component add rust-analyzer rls
 
     go_pkgs=(
         "github.com/google/gops@latest"
