@@ -76,6 +76,9 @@ alias gst="git status"
 alias gd="git diff"
 alias ga="git add"
 alias gc="git commit -v"
+function gb {
+    git branch -a | \grep remotes - | sed 's#remotes/[a-zA-Z0-9_-]*/##g' | awk '!/HEAD/'
+}
 function gp {
     git push origin "$(git symbolic-ref --short HEAD)" ${*}
 }
@@ -89,9 +92,14 @@ function gcl {
     fi
 }
 function gco {
-    branch="${1}"
+    local main="main"
+    if [[ "$(gb)" =~ "master" ]]; then
+        main="master"
+    fi
+
+    local branch="${1}"
     if [[ "${branch}" == "" ]]; then
-        branch="master"
+        branch="${main}"
     fi
 
     git checkout "${branch}" ${@:2}
@@ -100,9 +108,7 @@ function gco {
     fi
 }
 function _gco_complete {
-    branches="$(git branch -a | \grep remotes - | sed 's#remotes/[a-zA-Z0-9_-]*/##g' | awk '!/HEAD/')"
-
-    compadd "${(@)${(f)${branches}}#??}"
+    compadd "${(@)${(f)$(gb)}#??}"
 }
 compdef _gco_complete gco
 
@@ -119,9 +125,9 @@ function ports {
     fi
 
     while read item; do
-        pid="$(echo "${item}" | awk '{print $1}')"
-        addr="$(echo "${item}" | awk '{print $2}')"
-        cmd="$(ps -o command "${pid}" | sed 1d)"
+        local pid="$(echo "${item}" | awk '{print $1}')"
+        local addr="$(echo "${item}" | awk '{print $2}')"
+        local cmd="$(ps -o command "${pid}" | sed 1d)"
 
         printf "%-10s %-20s %s\n" "${pid}" "${addr}" "${cmd}"
     done <<< "${items}"
