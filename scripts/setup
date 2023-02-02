@@ -116,7 +116,6 @@ function packages_step {
             xsel p7zip tree jq graphviz imagemagick zsh pv
 
         sudo snap install go
-        sudo snap install blender
         sudo snap install --edge --classic just
         sudo snap install golangci-lint
     else
@@ -156,8 +155,6 @@ function packages_step {
             set -u
 
             gem install lunchy
-        else
-            brew install --cask blender
         fi
 
         echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
@@ -166,7 +163,9 @@ function packages_step {
         ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
     fi
 
+    export PATH="${HOME}/.cargo/bin:${PATH}"
     curl -fsSL https://sh.rustup.rs | sh -s - -y --no-modify-path
+    rustup component add rust-analyzer
 
     go_pkgs=(
         "github.com/google/gops@latest"
