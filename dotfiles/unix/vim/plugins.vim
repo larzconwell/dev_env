@@ -17,9 +17,9 @@ endif
 
 " Syntax
 Plug 'pangloss/vim-javascript'
+Plug 'leafgarland/typescript-vim'
 Plug 'leshill/vim-json'
 Plug 'fatih/vim-go'
-Plug 'kchmck/vim-coffee-script'
 Plug 'cespare/vim-toml'
 Plug 'rust-lang/rust.vim'
 Plug 'PProvost/vim-ps1'
