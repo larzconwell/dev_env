@@ -12,7 +12,7 @@ Plug 'vim-airline/vim-airline'
 Plug 'dense-analysis/ale'
 
 if $SYS_ENV == 'work'
-    Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+    Plug 'prettier/vim-prettier', { 'do': 'yarn install --frozen-lockfile --production' }
 endif
 
 " Syntax
