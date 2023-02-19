@@ -114,7 +114,6 @@ compdef _gco_complete gco
 
 # Custom commands
 alias -g prog="cd ${HOME}/Programming"
-alias -g goprog="cd ${HOME}/Programming/go"
 alias vimupdate="vim +PlugUpdate +PlugClean!"
 function ports {
     local items="$(sudo lsof -n -i -P | tr -s " " | cut -d " " -f 2,9,10 | \grep "LISTEN")"
