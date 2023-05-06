@@ -156,6 +156,7 @@ function packages_step {
             rvm --default use 2.7
             set -u
 
+            npm install -g typescript-language-server typescript
             gem install lunchy
         fi
 
@@ -173,6 +174,7 @@ function packages_step {
         "github.com/google/gops@latest"
         "golang.org/x/tools/cmd/goimports@latest"
         "golang.org/x/tools/gopls@latest"
+        "github.com/go-delve/delve/cmd/dlv@latest"
     )
     for pkg in ${go_pkgs[@]}; do
         go install "${pkg}"
