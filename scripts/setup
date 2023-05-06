@@ -111,7 +111,7 @@ function packages_step {
         sudo add-apt-repository ppa:maveonair/helix-editor
 
         sudo apt-get update
-        sudo apt-get install ${apt_args} firefox kitty helix vim-gtk
+        sudo apt-get install ${apt_args} firefox kitty helix
         sudo apt-get install ${apt_args} \
             docker-ce docker-ce-cli containerd.io docker-compose-plugin \
             shellcheck cmake clang clang-format valgrind nasm \
@@ -126,7 +126,7 @@ function packages_step {
             docker docker-compose colima \
             gdb shellcheck cmake clang-format nasm \
             grep wget curl openssh openssl ack p7zip tree \
-            jq graphviz imagemagick helix vim zsh pv go just golangci-lint
+            jq graphviz imagemagick helix zsh pv go just golangci-lint
 
         if [[ "${platform}" == "work" ]]; then
             brew tap movableink/formulas
@@ -206,6 +206,4 @@ message $green "==> Additional manual steps should be taken:"
 message $green "-->   Set Firefox and Chrome themes to Dracula"
 message $green "-->   Set Slack theme to Dracula"
 message $green "-->   Set the systems monospace font to JetBrains Mono"
-message $green "-->   Run vimupdate"
-message $green "-->   Run :GoInstallBinaries inside vim"
 message $green "-->   Remove NVM changes to ${HOME}/.zshrc"
