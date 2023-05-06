@@ -1,0 +1,36 @@
+theme = "dracula"
+
+[editor]
+scroll-lines = 5
+line-number = "absolute"
+cursorline = true
+
+[editor.statusline]
+left = ["mode", "spinner", "file-name", "file-modification-indicator"]
+center = []
+right = ["diagnostics", "file-type", "file-encoding", "file-line-ending", "position", "total-line-numbers"]
+
+[editor.lsp]
+display-inlay-hints = false
+
+[editor.cursor-shape]
+normal = "block"
+select = "block"
+insert = "bar"
+
+[editor.whitespace.render]
+space = "none"
+nbsp = "all"
+tab = "all"
+newline = "none"
+
+[editor.whitespace.characters]
+nbsp = "⍽"
+tab = "→"
+tabpad = " "
+
+[editor.indent-guides]
+render = false
+
+[editor.soft-wrap]
+enable = false

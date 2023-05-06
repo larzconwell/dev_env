@@ -107,9 +107,11 @@ function packages_step {
         curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
         echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
             $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-        sudo apt-get update
 
-        sudo apt-get install ${apt_args} firefox kitty vim-gtk
+        sudo add-apt-repository ppa:maveonair/helix-editor
+
+        sudo apt-get update
+        sudo apt-get install ${apt_args} firefox kitty helix vim-gtk
         sudo apt-get install ${apt_args} \
             docker-ce docker-ce-cli containerd.io docker-compose-plugin \
             shellcheck cmake clang clang-format valgrind nasm \
@@ -124,7 +126,7 @@ function packages_step {
             docker docker-compose colima \
             gdb shellcheck cmake clang-format nasm \
             grep wget curl openssh openssl ack p7zip tree \
-            jq graphviz imagemagick vim zsh pv go just golangci-lint
+            jq graphviz imagemagick helix vim zsh pv go just golangci-lint
 
         if [[ "${platform}" == "work" ]]; then
             brew tap movableink/formulas

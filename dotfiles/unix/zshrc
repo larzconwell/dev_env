@@ -44,7 +44,7 @@ export HISTFILE="${HOME}/.zsh_history"
 export HISTSIZE=3000
 export SAVEHIST=2000
 export PATH="/usr/local/bin:/usr/local/sbin:${HOME}/.local/bin:${PATH}"
-export EDITOR="vim"
+export EDITOR="hx"
 export PAGER="less"
 export LANG="en_US.UTF-8"
 
