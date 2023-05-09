@@ -113,8 +113,11 @@ function _gco_complete {
 compdef _gco_complete gco
 
 # Custom commands
-alias vim="hx"
 alias prog="cd ${HOME}/Programming"
+function vim {
+    echo "use hx"
+    return 1
+}
 function ports {
     local items="$(sudo lsof -n -i -P | tr -s " " | cut -d " " -f 2,9,10 | \grep "LISTEN")"
 
