@@ -1,3 +1,7 @@
 [[language]]
 name = "go"
 formatter = { command = "goimports" }
+
+[[language]]
+name = "gleam"
+auto-format = true
