@@ -19,12 +19,13 @@ select = "block"
 insert = "bar"
 
 [editor.whitespace.render]
-space = "none"
+space = "all"
 nbsp = "all"
 tab = "all"
 newline = "none"
 
 [editor.whitespace.characters]
+space = "·"
 nbsp = "⍽"
 tab = "→"
 tabpad = " "
