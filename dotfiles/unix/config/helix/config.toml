@@ -11,7 +11,9 @@ center = []
 right = ["diagnostics", "file-type", "file-encoding", "file-line-ending", "position", "total-line-numbers"]
 
 [editor.lsp]
+auto-signature-help = false
 display-inlay-hints = false
+display-signature-help-docs = false
 
 [editor.cursor-shape]
 normal = "block"
