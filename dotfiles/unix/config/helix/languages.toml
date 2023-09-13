@@ -5,3 +5,7 @@ formatter = { command = "goimports" }
 [[language]]
 name = "gleam"
 auto-format = true
+
+[[language]]
+name = "ocaml"
+auto-format = true
