@@ -174,7 +174,7 @@ function packages_step {
 
     opam init --no-setup --kind git --yes
     eval "$(opam env)"
-    opam install --yes dune merlin odoc ocaml-lsp-server ocamlformat
+    opam install --yes dune merlin odoc ocaml-lsp-server ocamlformat utop dune-release
 
     go_pkgs=(
         "github.com/google/gops@latest"
