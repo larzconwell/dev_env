@@ -182,6 +182,7 @@ function packages_step {
         "golang.org/x/tools/cmd/goimports@latest"
         "golang.org/x/tools/gopls@latest"
         "github.com/go-delve/delve/cmd/dlv@latest"
+        "github.com/nametake/golangci-lint-langserver@latest"
     )
     for pkg in ${go_pkgs[@]}; do
         go install "${pkg}"
