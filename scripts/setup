@@ -122,7 +122,7 @@ function packages_step {
         sudo snap install --edge --classic just
         sudo snap install golangci-lint
     else
-        brew install --cask firefox kitty rectangle
+        brew install --cask firefox kitty rectangle keepingyouawake
         brew install \
             docker docker-compose colima \
             gdb shellcheck cmake clang-format nasm \
@@ -134,7 +134,7 @@ function packages_step {
             brew tap movableink/formulas
 
             brew install --cask \
-                google-chrome postgres 1password dropbox \
+                google-chrome postgres 1password \
                 intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
 
             brew install \
@@ -142,7 +142,7 @@ function packages_step {
                 movableink/formulas/nsqlookupd movableink/formulas/nsqd \
                 movableink/formulas/nsqadmin movableink/formulas/nsqutils \
                 movableink/formulas/qt movableink/formulas/qtwebkit \
-                movableink/formulas/apache-spark
+                movableink/formulas/apache-spark movableink/formulas/apache-pulsar
 
             curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
             source "${HOME}/.nvm/nvm.sh"

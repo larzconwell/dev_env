@@ -21,6 +21,7 @@ setopt prompt_subst
 setopt c_bases
 setopt c_precedences
 setopt multios
+setopt extendedglob
 unsetopt beep
 
 # Keybindings
