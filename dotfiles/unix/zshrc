@@ -66,9 +66,6 @@ kitty + complete setup zsh | source /dev/stdin
 # Language binaries
 export PATH="$(go env GOPATH)/bin:${PATH}"
 export PATH="${HOME}/.cargo/bin:${PATH}"
-if [[ -d "${HOME}/.opam" ]]; then
-    source "${HOME}/.opam/opam-init/init.zsh"
-fi
 
 # Command overrides
 alias mkdir="mkdir -p"

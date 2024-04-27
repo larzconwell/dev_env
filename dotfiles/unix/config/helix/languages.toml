@@ -12,7 +12,3 @@ language-servers = [ "gopls", "golangci-lint-lsp" ]
 [[language]]
 name = "gleam"
 auto-format = true
-
-[[language]]
-name = "ocaml"
-auto-format = true
