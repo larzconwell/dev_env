@@ -36,8 +36,8 @@ function step {
     message $green "--> Done"
 }
 
-if [[ "${platform}" != "linux" ]] && [[ "${platform}" != "darwin" ]] && [[ "${platform}" != "work" ]]; then
-    message $red "Unknown platform given. Valid platforms are linux, darwin, and work"
+if [[ "${platform}" != "darwin" ]] && [[ "${platform}" != "work" ]]; then
+    message $red "Unknown platform given. Valid platforms are darwin, and work"
     rm "${output}"
     exit 1
 fi
@@ -45,26 +45,19 @@ fi
 message $yellow "!!! Detailed command output is being written to ${output}"
 
 function base_step {
-    if [[ "${system}" == "linux" ]]; then
-        sudo apt-get update ${apt_args}
-        sudo apt-get upgrade ${apt_args}
+    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | NONINTERACTIVE=1 bash
 
-        sudo apt-get install ${apt_args} curl git build-essential
-    else
-        curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | NONINTERACTIVE=1 bash
-
-        local brewdir="/usr/local"
-        if [[ "$(uname -m)" == "arm64" ]]; then
-            brewdir="/opt/homebrew"
-        fi
-        eval "$("${brewdir}"/bin/brew shellenv)"
-
-        brew analytics off
-        brew tap homebrew/cask-versions
-        brew tap homebrew/cask-fonts
-
-        brew install git
+    local brewdir="/usr/local"
+    if [[ "$(uname -m)" == "arm64" ]]; then
+        brewdir="/opt/homebrew"
     fi
+    eval "$("${brewdir}"/bin/brew shellenv)"
+
+    brew analytics off
+    brew tap homebrew/cask-versions
+    brew tap homebrew/cask-fonts
+
+    brew install git
 }
 step "Installing base requirements" base_step
 
@@ -80,95 +73,57 @@ function link_step {
 step "Linking dotfiles" link_step
 
 function fonts_step {
-    if [[ "${system}" == "linux" ]]; then
-        local font_zip="${tmp}/font.zip"
-        local tmp_font_dir="${tmp}/font"
-        local font_dir="/usr/local/share/fonts/truetype/JetBrainsMono"
-
-        mkdir -p "${tmp_font_dir}"
-        sudo mkdir -p "${font_dir}"
-
-        curl -fsSL "https://download.jetbrains.com/fonts/JetBrainsMono-2.242.zip" 1>"${font_zip}" 2>>"${output}"
-        unzip -d "${tmp_font_dir}" "${font_zip}"
-
-        sudo mv "${tmp_font_dir}/fonts/ttf/"* "${font_dir}"
-        fc-cache -v
-
-        rm -rf "${font_zip}" "${tmp_font_dir}"
-    else
-        brew install --cask --fontdir=/Library/Fonts font-jetbrains-mono
-    fi
+    brew install --cask --fontdir=/Library/Fonts font-jetbrains-mono
 }
 step "Installing fonts" fonts_step
 
 function packages_step {
-    if [[ "${system}" == "linux" ]]; then
-        sudo mkdir -p /etc/apt/keyrings
-        curl -fsSL "https://download.docker.com/linux/ubuntu/gpg" | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-        echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+    brew install --cask firefox kitty rectangle keepingyouawake dotnet-sdk
+    brew install \
+        docker docker-compose colima \
+        gdb shellcheck cmake clang-format nasm \
+        grep wget curl openssh openssl ack p7zip tree \
+        jq graphviz imagemagick helix zsh pv go just \
+        golangci-lint odin
 
-        sudo add-apt-repository ppa:maveonair/helix-editor
-        sudo add-apt-repository ppa:avsm/ppa
+    if [[ "${platform}" == "work" ]]; then
+        brew tap movableink/formulas
 
-        sudo apt-get update
-        sudo apt-get install ${apt_args} firefox kitty helix
-        sudo apt-get install ${apt_args} \
-            docker-ce docker-ce-cli containerd.io docker-compose-plugin \
-            shellcheck cmake clang clang-format valgrind nasm \
-            xsel p7zip tree jq graphviz imagemagick zsh pv
+        brew install --cask \
+            google-chrome postgres 1password \
+            intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
 
-        sudo snap install go
-        sudo snap install --edge --classic just
-        sudo snap install golangci-lint
-    else
-        brew install --cask firefox kitty rectangle keepingyouawake dotnet-sdk
         brew install \
-            docker docker-compose colima \
-            gdb shellcheck cmake clang-format nasm \
-            grep wget curl openssh openssl ack p7zip tree \
-            jq graphviz imagemagick helix zsh pv go just \
-            golangci-lint
+            redis python icu4c libxslt geoip maven sbt scala@2.11 awscli prometheus \
+            movableink/formulas/nsqlookupd movableink/formulas/nsqd \
+            movableink/formulas/nsqadmin movableink/formulas/nsqutils \
+            movableink/formulas/qt movableink/formulas/qtwebkit \
+            movableink/formulas/apache-spark movableink/formulas/apache-pulsar
 
-        if [[ "${platform}" == "work" ]]; then
-            brew tap movableink/formulas
+        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+        source "${HOME}/.nvm/nvm.sh"
 
-            brew install --cask \
-                google-chrome postgres 1password \
-                intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
+        nvm install 16
+        nvm alias default 16
 
-            brew install \
-                redis python icu4c libxslt geoip maven sbt scala@2.11 awscli prometheus \
-                movableink/formulas/nsqlookupd movableink/formulas/nsqd \
-                movableink/formulas/nsqadmin movableink/formulas/nsqutils \
-                movableink/formulas/qt movableink/formulas/qtwebkit \
-                movableink/formulas/apache-spark movableink/formulas/apache-pulsar
+        set +u
+        curl -fsSL https://get.rvm.io | bash -s - stable --ignore-dotfiles
+        source "${HOME}/.rvm/scripts/rvm"
 
-            curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-            source "${HOME}/.nvm/nvm.sh"
+        rvm install 2.7
+        rvm --default use 2.7
+        set -u
 
-            nvm install 16
-            nvm alias default 16
-
-            set +u
-            curl -fsSL https://get.rvm.io | bash -s - stable --ignore-dotfiles
-            source "${HOME}/.rvm/scripts/rvm"
-
-            rvm install 2.7
-            rvm --default use 2.7
-            set -u
-
-            npm install -g typescript-language-server typescript
-            gem install lunchy
-        fi
-
-        dotnet tool install --global --verbosity  fsautocomplete
-
-        echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
-
-        mkdir -p "${HOME}/.docker/cli-plugins"
-        ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
+        npm install -g typescript-language-server typescript
+        gem install lunchy
     fi
+
+    dotnet tool install --global --verbosity  fsautocomplete
+
+    echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
+
+    mkdir -p "${HOME}/.docker/cli-plugins"
+    ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
 
     export PATH="${HOME}/.cargo/bin:${PATH}"
     curl -fsSL https://sh.rustup.rs | sh -s - -y --no-modify-path
@@ -198,17 +153,7 @@ function root_passwd_step {
 }
 step no_redirect "Configuring root password" root_passwd_step
 
-function cleanup_step {
-    if [[ "${system}" == "linux" ]]; then
-        sudo apt-get clean ${apt_args}
-        sudo apt-get autoremove ${apt_args}
-    fi
-}
-step "Cleaning up apt" cleanup_step
-
 message $green "==> Setup complete, a restart is advised"
 message $green "==> Additional manual steps should be taken:"
-message $green "-->   Set Firefox and Chrome themes to Dracula"
-message $green "-->   Set Slack theme to Dracula"
 message $green "-->   Set the systems monospace font to JetBrains Mono"
-message $green "-->   Remove NVM changes to ${HOME}/.zshrc"
+message $green "-->   Remove NVM changes made in ${HOME}/.zshrc"
