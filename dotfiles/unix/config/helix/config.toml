@@ -1,4 +1,4 @@
-theme = "dracula"
+theme = "tokyonight_day"
 
 [editor]
 scroll-lines = 5
