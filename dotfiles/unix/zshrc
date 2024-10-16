@@ -32,12 +32,7 @@ bindkey "^[[3~" delete-char
 # Environment
 os="$(uname -s | tr 'A-Z' 'a-z')"
 if [[ "${os}" == "darwin" ]]; then
-    brewdir="/usr/local"
-    if [[ "$(uname -m)" == "arm64" ]]; then
-        brewdir="/opt/homebrew"
-    fi
-
-    eval "$("${brewdir}"/bin/brew shellenv)"
+    eval "$(/opt/homebrew/bin/brew shellenv)"
 fi
 export TERM="xterm-256color"
 export ZSHRC="${HOME}/.zshrc"
@@ -64,7 +59,7 @@ RPROMPT="%(?..%{${fg[red]}%}%?)%{${reset_color}%}"
 # Kitty
 kitty + complete setup zsh | source /dev/stdin
 
-# Language binaries
+# Language setups
 export PATH="$(go env GOPATH)/bin:${PATH}"
 export PATH="${HOME}/.cargo/bin:${PATH}"
 export PATH="${HOME}/.dotnet/tools:${PATH}"
@@ -80,7 +75,7 @@ alias gd="git diff"
 alias ga="git add"
 alias gc="git commit -v"
 function gb {
-    git branch -a | \grep remotes - | sed 's#remotes/[a-zA-Z0-9_-]*/##g' | awk '!/HEAD/'
+    git branch --all | awk '!/HEAD/' | sed -e 's#^\** *##' -e 's#remotes/[^/]*/##' | sort | uniq
 }
 function gp {
     git push origin "$(git symbolic-ref --short HEAD)" ${*}
@@ -94,33 +89,53 @@ function gcl {
         git clone "git@github.com:$(git config user.github)/${1}.git" ${@:2}
     fi
 }
-function gco {
+function gsw {
     local main="main"
-    if [[ "$(gb)" =~ "master" ]]; then
+    if gb | \grep --quiet --line-regexp "master"; then
         main="master"
     fi
 
-    local branch="${1}"
-    if [[ "${branch}" == "" ]]; then
-        branch="${main}"
-    fi
+    case "${#}" in
+    "0")
+        git switch "${main}"
+        ;;
+    "1")
+        local branch="${1}"
+        if [[ "${branch}" == "-" ]]; then
+            git switch "${branch}"
+            return 0
+        fi
 
-    git checkout "${branch}" ${@:2}
-    if [[ $? != 0 ]]; then
-        git checkout -b "${branch}" ${@:2}
-    fi
+        if ! gb | \grep --quiet --line-regexp "${branch}"; then
+            git branch --track "${branch}" "${main}"
+        fi
+
+        git switch "${branch}"
+        ;;
+    *)
+        local start="${1}"
+        local branch="${2}"
+
+        if ! gb | \grep --quiet --line-regexp "${start}"; then
+            echo "Start branch ${start} does not exist"
+            return 1
+        fi
+        if gb | \grep --quiet --line-regexp "${branch}"; then
+            echo "Branch ${branch} already exists, just do gsw ${branch}"
+            return 1
+        fi
+
+        git branch --track "${branch}" "${start}"
+        git switch "${branch}"
+    esac
 }
-function _gco_complete {
-    compadd "${(@)${(f)$(gb)}#??}"
+function _gsw_complete {
+    compadd $(gb)
 }
-compdef _gco_complete gco
+compdef _gsw_complete gsw
 
 # Custom commands
 alias prog="cd ${HOME}/Programming"
-function vim {
-    echo "use hx"
-    return 1
-}
 function ports {
     local items="$(sudo lsof -n -i -P | tr -s " " | cut -d " " -f 2,9,10 | \grep "LISTEN")"
 
