@@ -122,7 +122,7 @@ function packages_step {
         sudo snap install --edge --classic just
         sudo snap install golangci-lint
     else
-        brew install --cask firefox kitty rectangle
+        brew install --cask firefox kitty rectangle dotnet-sdk
         brew install \
             docker docker-compose colima \
             gdb shellcheck cmake clang-format nasm \
@@ -161,6 +161,8 @@ function packages_step {
             npm install -g typescript-language-server typescript
             gem install lunchy
         fi
+
+        dotnet tool install --global --verbosity  fsautocomplete
 
         echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
 

@@ -66,6 +66,8 @@ kitty + complete setup zsh | source /dev/stdin
 # Language binaries
 export PATH="$(go env GOPATH)/bin:${PATH}"
 export PATH="${HOME}/.cargo/bin:${PATH}"
+export PATH="${HOME}/.dotnet/tools:${PATH}"
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
 # Command overrides
 alias mkdir="mkdir -p"
