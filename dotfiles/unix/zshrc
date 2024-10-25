@@ -89,6 +89,43 @@ function gcl {
         git clone "git@github.com:$(git config user.github)/${1}.git" ${@:2}
     fi
 }
+function gt {
+    case "${#}" in
+    "0")
+        git tag --list
+        ;;
+    "1")
+        local tag="${1}"
+
+        if ! git tag --list | \grep --quiet --line-regexp "${tag}"; then
+            echo "Tag ${tag} does not exist"
+            return 1
+        fi
+
+        git switch --detach "tags/${tag}"
+        ;;
+    *)
+        local tag="${1}"
+        local object="${2}"
+        local message="${3}"
+
+        # If no message given, assume object is message and default object to HEAD
+        if [[ "${message}" == "" ]]; then
+            message="${object}"
+            object="HEAD"
+        fi
+
+        if git tag --list | \grep --quiet --line-regexp "${tag}"; then
+            echo "Tag ${tag} already exists"
+            return 1
+        fi
+
+        git tag --annotate --message="${message}" "${tag}" "${object}"
+        git switch --detach "tags/${tag}"
+        git push origin "tags/${tag}"
+        ;;
+    esac
+}
 function gsw {
     local main="main"
     if gb | \grep --quiet --line-regexp "master"; then
