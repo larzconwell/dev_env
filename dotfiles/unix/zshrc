@@ -64,6 +64,7 @@ export PATH="$(go env GOPATH)/bin:${PATH}"
 export PATH="${HOME}/.cargo/bin:${PATH}"
 export PATH="${HOME}/.dotnet/tools:${PATH}"
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
+export GOTOOLCHAIN=auto
 
 # Command overrides
 alias mkdir="mkdir -p"
@@ -143,10 +144,22 @@ function gsw {
             return 0
         fi
 
-        if ! gb | \grep --quiet --line-regexp "${branch}"; then
-            git branch --track "${branch}" "${main}"
+        if git tag --list | \grep --quiet --line-regexp "${branch}"; then
+            git switch --detach "tags/${branch}"
+            return 0
         fi
 
+        if git rev-parse --quiet --verify "${branch}^{commit}" &>/dev/null; then
+            git switch --detach "${branch}"
+            return 0
+        fi
+
+        if gb | \grep --quiet --line-regexp "${branch}"; then
+            git switch "${branch}"
+            return 0
+        fi
+
+        git branch --track "${branch}" "${main}"
         git switch "${branch}"
         ;;
     *)
