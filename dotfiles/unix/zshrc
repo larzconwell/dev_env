@@ -95,16 +95,6 @@ function gt {
     "0")
         git tag --list
         ;;
-    "1")
-        local tag="${1}"
-
-        if ! git tag --list | \grep --quiet --line-regexp "${tag}"; then
-            echo "Tag ${tag} does not exist"
-            return 1
-        fi
-
-        git switch --detach "tags/${tag}"
-        ;;
     *)
         local tag="${1}"
         local object="${2}"
@@ -127,62 +117,26 @@ function gt {
         ;;
     esac
 }
-function gsw {
+function gco {
     local main="main"
     if gb | \grep --quiet --line-regexp "master"; then
         main="master"
     fi
 
-    case "${#}" in
-    "0")
-        git switch "${main}"
-        ;;
-    "1")
-        local branch="${1}"
-        if [[ "${branch}" == "-" ]]; then
-            git switch "${branch}"
-            return 0
-        fi
+    local object="${1}"
+    if [[ "${object}" == "" ]]; then
+        object="${main}"
+    fi
 
-        if git tag --list | \grep --quiet --line-regexp "${branch}"; then
-            git switch --detach "tags/${branch}"
-            return 0
-        fi
-
-        if git rev-parse --quiet --verify "${branch}^{commit}" &>/dev/null; then
-            git switch --detach "${branch}"
-            return 0
-        fi
-
-        if gb | \grep --quiet --line-regexp "${branch}"; then
-            git switch "${branch}"
-            return 0
-        fi
-
-        git branch --track "${branch}" "${main}"
-        git switch "${branch}"
-        ;;
-    *)
-        local start="${1}"
-        local branch="${2}"
-
-        if ! gb | \grep --quiet --line-regexp "${start}"; then
-            echo "Start branch ${start} does not exist"
-            return 1
-        fi
-        if gb | \grep --quiet --line-regexp "${branch}"; then
-            echo "Branch ${branch} already exists, just do gsw ${branch}"
-            return 1
-        fi
-
-        git branch --track "${branch}" "${start}"
-        git switch "${branch}"
-    esac
+    git checkout "${object}" ${@:2}
+    if [[ $? != 0 ]]; then
+        git checkout -b "${object}" ${@:2}
+    fi
 }
-function _gsw_complete {
+function _gco_complete {
     compadd $(gb)
 }
-compdef _gsw_complete gsw
+compdef _gco_complete gco
 
 # Custom commands
 alias prog="cd ${HOME}/Programming"
