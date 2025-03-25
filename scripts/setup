@@ -78,11 +78,11 @@ function fonts_step {
 step "Installing fonts" fonts_step
 
 function packages_step {
-    brew install --cask firefox kitty rectangle keepingyouawake dotnet-sdk
+    brew install --cask firefox kitty rectangle keepingyouawake
     brew install \
         docker docker-compose colima \
         gdb shellcheck cmake clang-format nasm \
-        grep wget curl openssh openssl ack p7zip tree \
+        wget curl openssh openssl ack p7zip tree \
         jq graphviz imagemagick helix zsh pv go just \
         golangci-lint odin
 
@@ -91,14 +91,12 @@ function packages_step {
 
         brew install --cask \
             google-chrome postgres 1password \
-            intellij-idea-ce adoptopenjdk8 zoom slack keybase tuple
+            zoom slack keybase tuple
 
         brew install \
-            redis python icu4c libxslt geoip maven sbt scala@2.11 awscli prometheus \
-            movableink/formulas/nsqlookupd movableink/formulas/nsqd \
-            movableink/formulas/nsqadmin movableink/formulas/nsqutils \
+            redis python icu4c libxslt geoip awscli prometheus dotnet-sdk \
             movableink/formulas/qt movableink/formulas/qtwebkit \
-            movableink/formulas/apache-spark movableink/formulas/apache-pulsar
+            movableink/formulas/apache-pulsar
 
         curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
         source "${HOME}/.nvm/nvm.sh"
@@ -116,9 +114,9 @@ function packages_step {
 
         npm install -g typescript-language-server typescript
         gem install lunchy
-    fi
 
-    dotnet tool install --global --verbosity  fsautocomplete
+        dotnet tool install --global --verbosity  fsautocomplete
+    fi
 
     echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
 
@@ -155,5 +153,4 @@ step no_redirect "Configuring root password" root_passwd_step
 
 message $green "==> Setup complete, a restart is advised"
 message $green "==> Additional manual steps should be taken:"
-message $green "-->   Set the systems monospace font to JetBrains Mono"
 message $green "-->   Remove NVM changes made in ${HOME}/.zshrc"
