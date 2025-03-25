@@ -73,7 +73,7 @@ function link_step {
 step "Linking dotfiles" link_step
 
 function fonts_step {
-    brew install --cask --fontdir=/Library/Fonts font-jetbrains-mono
+    brew install --cask --fontdir=/Library/Fonts font-maple-mono
 }
 step "Installing fonts" fonts_step
 
