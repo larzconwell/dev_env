@@ -15,6 +15,10 @@ auto-signature-help = false
 display-inlay-hints = false
 display-signature-help-docs = false
 
+[editor.inline-diagnostics]
+cursor-line = "warning"
+prefix-len = 2
+
 [editor.cursor-shape]
 normal = "block"
 select = "block"
