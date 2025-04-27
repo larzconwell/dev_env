@@ -2,19 +2,37 @@
 set -e
 set -u
 
-function list_contains {
-    local list="${1}"
-    local item="${2}"
-
-    for list_item in ${list}; do
-        if [[ "${list_item}" == "${item}" ]]; then
-            echo "${item}"
-            break
-        fi
-    done
-}
-
 function link_dir {
+    local src="${1}"
+    local dest="${2}"
+    local prefix="${3}"
+
+    for path in $(find "${src}" -type f -depth 1); do
+        name="$(basename "${path}")"
+        local link="${dest}/${prefix}${name}"
+
+        rm -f "${link}"
+        ln -s "${path}" "${link}"
+    done
+
+    while read -r path; do
+        IFS=/ read -r -a parts <<< "${path/${src}\//}"
+
+        local first_part="${parts[0]}"
+        if [[ "${first_part}" != "Library" ]]; then
+            parts[0]="${prefix}${first_part}"
+        fi
+
+        local link="${dest}/$(IFS=/; echo "${parts[*]}")"
+        local link_dir="$(dirname "${link}")"
+
+        mkdir -p "${link_dir}"
+        rm -rf "${link}"
+        ln -s "${path}" "${link}"
+    done < <(find "${src}" -type f -mindepth 2 -exec "dirname" "{}" + | sort | uniq)
+    exit 0
+
+
     local src="${1}"
     local dest="${2}"
     local prefix="${3}"
@@ -35,6 +53,7 @@ function link_dir {
             for path in "${path}/"*; do
                 name="$(basename "${path}")"
                 local link="${link}/${name}"
+                echo "${path} ${name} ${link}"
 
                 rm -rf "${link}"
                 ln -s "${path}" "${link}"
