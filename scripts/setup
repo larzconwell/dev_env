@@ -67,8 +67,7 @@ function clone_step {
 step "Cloning ${name}" clone_step
 
 function link_step {
-    "${dir}/scripts/link_files" "${dir}/dotfiles/unix" "${HOME}" "."
-    "${dir}/scripts/link_files" "${dir}/dotfiles/${system}" "${HOME}" "."
+    "${dir}/scripts/link_files" "${dir}/dotfiles" "${HOME}" "."
 }
 step "Linking dotfiles" link_step
 
@@ -115,7 +114,7 @@ function packages_step {
         npm install -g typescript-language-server typescript
         gem install lunchy
 
-        dotnet tool install --global --verbosity  fsautocomplete
+        dotnet tool install --global --verbosity fsautocomplete
     fi
 
     echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
