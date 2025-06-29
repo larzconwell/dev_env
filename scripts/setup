@@ -83,7 +83,7 @@ function packages_step {
         gdb shellcheck cmake clang-format nasm \
         wget curl openssh openssl ack p7zip tree \
         jq graphviz imagemagick helix zsh pv go just \
-        golangci-lint odin
+        golangci-lint elixir elixir-ls
 
     if [[ "${platform}" == "work" ]]; then
         brew tap movableink/formulas
@@ -93,7 +93,7 @@ function packages_step {
             zoom slack keybase tuple
 
         brew install \
-            redis python icu4c libxslt geoip awscli prometheus dotnet-sdk \
+            redis python icu4c libxslt geoip awscli prometheus \
             movableink/formulas/qt movableink/formulas/qtwebkit \
             movableink/formulas/apache-pulsar
 
@@ -113,8 +113,6 @@ function packages_step {
 
         npm install -g typescript-language-server typescript
         gem install lunchy
-
-        dotnet tool install --global --verbosity fsautocomplete
     fi
 
     echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1

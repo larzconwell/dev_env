@@ -10,5 +10,9 @@ formatter = { command = "goimports" }
 language-servers = [ "gopls", "golangci-lint-lsp" ]
 
 [[language]]
+name = "elixir"
+auto-format = true
+
+[[language]]
 name = "gleam"
 auto-format = true
