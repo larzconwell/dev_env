@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+original="$(cat /dev/stdin)"
+
+dir="$(pwd)"
+while [[ "${dir}" != "" && ! -e "${dir}/package.json" ]]; do
+  dir="${dir%/*}"
+done
+if [[ "${dir}" == "" ]]; then
+  dir="$(pwd)"
+fi
+cd "${dir}"
+echo "Using working directory ${dir}" 1>&2
+
+npm exec eslint -- --version &>/dev/null
+if [[ "${?}" != "0" ]]; then
+  echo "dev dependency not found: eslint" 1>&2
+  echo "${original}"
+  exit 2
+fi
+
+result="$(echo "${original}" | npm exec eslint -- --stdin --stdin-filename "${1}" --fix-dry-run --format json)"
+if [[ "${?}" != "0" ]]; then
+  echo "eslint fix failed" 1>&2
+  echo "${original}"
+  exit 1
+fi
+echo "${result}" 1>&2
+
+output="$(echo "${result}" | jq -r 'first | .output')"
+if [[ "${output}" == "null" ]]; then
+  echo "${original}"
+else
+  echo "${output}"
+fi

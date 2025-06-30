@@ -7,7 +7,19 @@ command = ["golangci-lint", "run", "--out-format", "json", "--issues-exit-code=1
 [[language]]
 name = "go"
 formatter = { command = "goimports" }
-language-servers = [ "gopls", "golangci-lint-lsp" ]
+language-servers = ["gopls", "golangci-lint-lsp"]
+
+[[language]]
+name = "typescript"
+language-servers = [{except-features = ["format"], name = "typescript-language-server"}, "vscode-eslint-language-server"]
+formatter = { command = "format-ts", args = ["file.ts"] }
+auto-format = true
+
+[[language]]
+name = "javascript"
+language-servers = [{except-features = ["format"], name = "typescript-language-server"}, "vscode-eslint-language-server"]
+formatter = { command = "format-ts", args = ["file.js"] }
+auto-format = true
 
 [[language]]
 name = "elixir"
