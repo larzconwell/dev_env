@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 set -u
-shopt -s extglob
 
 platform="${1}"
 system="${platform}"
@@ -112,9 +111,7 @@ function packages_step {
         rvm --default use 2.7
         set -u
 
-        npm install -g typescript-language-server vscode-langservers-extracted@4.8.0 typescript
-        npm_dir="$(dirname "$(npm list --global | head -n 1)")"
-        rm "${npm_dir}/bin/"vscode-!(eslint)-language-server
+        npm install -g typescript-language-server typescript
 
         gem install lunchy
     fi
