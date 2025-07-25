@@ -94,7 +94,7 @@ function packages_step {
 
         brew install \
             redis python python3 icu4c libxslt geoip awscli prometheus \
-            buf kubectl k9s logcli pipx cassandra libpulsar \
+            buf gh kubectl k9s logcli pipx cassandra libpulsar \
             movableink/formulas/qt movableink/formulas/qtwebkit \
             movableink/formulas/apache-pulsar
 
