@@ -93,22 +93,25 @@ function packages_step {
             zoom slack keybase tuple
 
         brew install \
-            redis python icu4c libxslt geoip awscli prometheus \
+            redis python python3 icu4c libxslt geoip awscli prometheus \
+            buf kubectl k9s logcli pipx cassandra libpulsar \
             movableink/formulas/qt movableink/formulas/qtwebkit \
             movableink/formulas/apache-pulsar
 
-        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+        pipx install yawsso
+
+        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
         source "${HOME}/.nvm/nvm.sh"
 
-        nvm install 16
-        nvm alias default 16
+        nvm install 20.11
+        nvm alias default 20.11
 
         set +u
         curl -fsSL https://get.rvm.io | bash -s - stable --ignore-dotfiles
         source "${HOME}/.rvm/scripts/rvm"
 
-        rvm install 2.7
-        rvm --default use 2.7
+        rvm install 3.4
+        rvm --default use 3.4
         set -u
 
         npm install -g typescript-language-server typescript
