@@ -79,7 +79,7 @@ step "Installing fonts" fonts_step
 function packages_step {
     brew install --cask firefox kitty rectangle keepingyouawake
     brew install \
-        docker docker-compose colima \
+        docker docker-compose colima grep \
         gdb shellcheck cmake clang-format nasm \
         wget curl openssh openssl ack p7zip tree \
         jq graphviz imagemagick helix zsh pv go just \
