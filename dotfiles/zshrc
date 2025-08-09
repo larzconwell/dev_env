@@ -158,7 +158,7 @@ function ports {
 }
 
 # System specifics
-grep_args="-nHr --color=auto --exclude-dir='\.git' --exclude-dir='dist' --exclude-dir='node_modules' --exclude-dir='log' --exclude-dir='vendor' --exclude-dir='tmp' --exclude-dir='temp'"
+grep_args="-nHr --color=auto --exclude-dir='\.git' --exclude-dir='dist' --exclude-dir='_build' --exclude-dir='deps' --exclude-dir='node_modules' --exclude-dir='log' --exclude-dir='vendor' --exclude-dir='tmp' --exclude-dir='temp'"
 case "${os}" in
     darwin)
         alias update="brew update"
