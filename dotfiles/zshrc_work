@@ -9,6 +9,7 @@ export JAVA_HOME="$(/usr/libexec/java_home)"
 export GOPRIVATE="github.com/movableink"
 
 source "${HOME}/.zsh_async/async.zsh"
+eval "$(direnv hook zsh)"
 
 # Node
 export NVM_DIR="${HOME}/.nvm"
