@@ -68,6 +68,10 @@ step "Cloning ${name}" clone_step
 
 function link_step {
     "${dir}/scripts/link_files" "${dir}/dotfiles" "${HOME}" "."
+
+    if [[ "${platform}" != "work" ]]; then
+        rm "${HOME}/.zshrc_work"
+    fi
 }
 step "Linking dotfiles" link_step
 
@@ -117,6 +121,8 @@ function packages_step {
         npm install -g typescript-language-server typescript
 
         gem install lunchy
+
+        git clone git@github.com:mafredri/zsh-async.git "${HOME}/.zsh_async"
     fi
 
     echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1

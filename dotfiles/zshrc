@@ -199,9 +199,12 @@ function chpwd {
     qls
 }
 
-# Private configuration
+# Separate env and private setup
 if [[ -f "${HOME}/.zshrc_private" ]]; then
     source "${HOME}/.zshrc_private"
+fi
+if [[ -f "${HOME}/.zshrc_work" ]]; then
+    source "${HOME}/.zshrc_work"
 fi
 
 # Remove duplicate PATH entries.

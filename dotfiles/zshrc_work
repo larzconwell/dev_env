@@ -1,0 +1,29 @@
+alias rspec="bundle exec rspec"
+alias rake="bundle exec rake"
+alias rails="bundle exec rails"
+
+export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:${PATH}"
+export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:$(brew --prefix)/include"
+export LIBRARY_PATH="${LIBRARY_PATH}:$(brew --prefix)/lib"
+export JAVA_HOME="$(/usr/libexec/java_home)"
+export GOPRIVATE="github.com/movableink"
+
+source "${HOME}/.zsh_async/async.zsh"
+
+# Node
+export NVM_DIR="${HOME}/.nvm"
+function load_nvm {
+    [[ -s "${NVM_DIR}/nvm.sh" ]] && source "${NVM_DIR}/nvm.sh"
+}
+async_start_worker nvm_loader -n
+async_register_callback nvm_loader load_nvm
+async_job nvm_loader sleep 0.1
+
+# Ruby
+export PATH="${HOME}/.rvm/bin:${PATH}"
+function load_rvm {
+    [[ -s "${HOME}/.rvm/scripts/rvm" ]] && source "${HOME}/.rvm/scripts/rvm"
+}
+async_start_worker rvm_loader -n
+async_register_callback rvm_loader load_rvm
+async_job rvm_loader sleep 0.1
