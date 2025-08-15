@@ -68,13 +68,21 @@ function fonts_step {
 step "Installing fonts" fonts_step
 
 function packages_step {
+    brew install mise
+    eval "$(mise activate bash)"
+
+    mise use --global --yes \
+        go rust erlang elixir aqua:gleam-lang/gleam \
+        asdf:mise-plugins/mise-rebar asdf:mise-plugins/mise-elixir-ls
+
     brew install --cask firefox kitty rectangle keepingyouawake
     brew install \
-        docker docker-compose colima grep \
-        gdb shellcheck cmake clang-format nasm \
-        wget curl openssh openssl ack p7zip tree \
-        jq graphviz imagemagick helix zsh pv go just \
-        golangci-lint elixir elixir-ls
+        docker docker-compose colima grep gdb \
+        shellcheck cmake clang-format wget curl \
+        openssh openssl ack p7zip tree jq graphviz \
+        imagemagick helix zsh just
+
+    rustup component add rust-analyzer
 
     if [[ "${platform}" == "work" ]]; then
         brew tap movableink/formulas
@@ -84,53 +92,19 @@ function packages_step {
             zoom slack keybase tuple
 
         brew install \
-            redis python python3 icu4c libxslt geoip awscli prometheus \
-            buf gh kubectl k9s logcli pipx direnv cassandra libpulsar \
+            redis icu4c libxslt geoip awscli prometheus buf \
+            gh kubectl k9s logcli direnv cassandra libpulsar \
             movableink/formulas/qt movableink/formulas/qtwebkit \
             movableink/formulas/apache-pulsar
 
-        pipx install yawsso
-
-        curl -fsSL https://raw.githubusercontent.com/nvm-sh/nvm/v0.40.3/install.sh | bash
-        source "${HOME}/.nvm/nvm.sh"
-
-        nvm install 20.11
-        nvm alias default 20.11
-
-        set +u
-        curl -fsSL https://get.rvm.io | bash -s - stable --ignore-dotfiles
-        source "${HOME}/.rvm/scripts/rvm"
-
-        rvm install 3.4
-        rvm --default use 3.4
-        set -u
-
-        npm install -g typescript-language-server typescript
-
-        gem install lunchy
-
-        git clone git@github.com:mafredri/zsh-async.git "${HOME}/.zsh_async"
+        mise use --global --yes \
+            python node ruby aqua:pypa/pipx pipx:yawsso
     fi
 
     echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
 
     mkdir -p "${HOME}/.docker/cli-plugins"
     ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
-
-    export PATH="${HOME}/.cargo/bin:${PATH}"
-    curl -fsSL https://sh.rustup.rs | sh -s - -y --no-modify-path
-    rustup component add rust-analyzer
-
-    go_pkgs=(
-        "github.com/google/gops@latest"
-        "golang.org/x/tools/cmd/goimports@latest"
-        "golang.org/x/tools/gopls@latest"
-        "github.com/go-delve/delve/cmd/dlv@latest"
-        "github.com/nametake/golangci-lint-langserver@latest"
-    )
-    for pkg in ${go_pkgs[@]}; do
-        go install "${pkg}"
-    done
 }
 step "Installing packages" packages_step
 

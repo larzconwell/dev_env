@@ -56,10 +56,11 @@ RPROMPT="%(?..%{${fg[red]}%}%?)%{${reset_color}%}"
 # Kitty
 kitty + complete setup zsh | source /dev/stdin
 
+# Mise
+eval "$(mise activate zsh)"
+
 # Language setups
 export PATH="$(go env GOPATH)/bin:${PATH}"
-export PATH="${HOME}/.cargo/bin:${PATH}"
-export PATH="${HOME}/.dotnet/tools:${PATH}"
 export GOTOOLCHAIN=auto
 
 # Command overrides
