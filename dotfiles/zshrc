@@ -69,6 +69,7 @@ alias less="less -R"
 alias ls="\ls -ovAGh"
 alias qls="\ls -AG"
 alias grep="ggrep -nHr --color=auto --exclude-dir='\.git' --exclude-dir='dist' --exclude-dir='_build' --exclude-dir='deps' --exclude-dir='node_modules' --exclude-dir='log' --exclude-dir='vendor' --exclude-dir='tmp' --exclude-dir='temp'"
+alias rg="\rg --smart-case --hidden --line-number"
 
 # Git
 alias gst="git status"

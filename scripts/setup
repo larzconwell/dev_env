@@ -79,7 +79,7 @@ function packages_step {
         docker docker-compose colima grep gdb \
         shellcheck cmake clang-format wget curl \
         openssh openssl ack p7zip tree jq graphviz \
-        imagemagick helix zsh just
+        imagemagick helix zsh just ripgrep
 
     rustup component add rust-analyzer
 
