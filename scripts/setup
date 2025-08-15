@@ -7,7 +7,6 @@ tmp="${TMPDIR:-/tmp}"
 name="dev_env"
 dir="${HOME}/Programming/${name}"
 output="${tmp}/${name}_setup"
-apt_args="--no-install-recommends --yes"
 
 cyan="$(tput setaf 6)"
 red="$(tput setaf 1)"
