@@ -3,11 +3,6 @@ set -e
 set -u
 
 platform="${1}"
-system="${platform}"
-if [[ "${system}" == "work" ]]; then
-    system="darwin"
-fi
-
 tmp="${TMPDIR:-/tmp}"
 name="dev_env"
 dir="${HOME}/Programming/${name}"
@@ -46,17 +41,9 @@ message $yellow "!!! Detailed command output is being written to ${output}"
 
 function base_step {
     curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | NONINTERACTIVE=1 bash
-
-    local brewdir="/usr/local"
-    if [[ "$(uname -m)" == "arm64" ]]; then
-        brewdir="/opt/homebrew"
-    fi
-    eval "$("${brewdir}"/bin/brew shellenv)"
+    eval "$("/opt/homebrew/bin/brew shellenv)"
 
     brew analytics off
-    brew tap homebrew/cask-versions
-    brew tap homebrew/cask-fonts
-
     brew install git
 }
 step "Installing base requirements" base_step

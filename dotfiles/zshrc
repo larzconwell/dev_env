@@ -30,10 +30,7 @@ bindkey "^[[F"  end-of-line
 bindkey "^[[3~" delete-char
 
 # Environment
-os="$(uname -s | tr 'A-Z' 'a-z')"
-if [[ "${os}" == "darwin" ]]; then
-    eval "$(/opt/homebrew/bin/brew shellenv)"
-fi
+eval "$(/opt/homebrew/bin/brew shellenv)"
 export TERM="xterm-256color"
 export ZSHRC="${HOME}/.zshrc"
 export HISTFILE="${HOME}/.zsh_history"
@@ -63,12 +60,14 @@ kitty + complete setup zsh | source /dev/stdin
 export PATH="$(go env GOPATH)/bin:${PATH}"
 export PATH="${HOME}/.cargo/bin:${PATH}"
 export PATH="${HOME}/.dotnet/tools:${PATH}"
-export DOTNET_CLI_TELEMETRY_OPTOUT=1
 export GOTOOLCHAIN=auto
 
 # Command overrides
 alias mkdir="mkdir -p"
 alias less="less -R"
+alias ls="\ls -ovAGh"
+alias qls="\ls -AG"
+alias grep="ggrep -nHr --color=auto --exclude-dir='\.git' --exclude-dir='dist' --exclude-dir='_build' --exclude-dir='deps' --exclude-dir='node_modules' --exclude-dir='log' --exclude-dir='vendor' --exclude-dir='tmp' --exclude-dir='temp'"
 
 # Git
 alias gst="git status"
@@ -156,36 +155,6 @@ function ports {
         printf "%-10s %-20s %s\n" "${pid}" "${addr}" "${cmd}"
     done <<< "${items}"
 }
-
-# System specifics
-grep_args="-nHr --color=auto --exclude-dir='\.git' --exclude-dir='dist' --exclude-dir='_build' --exclude-dir='deps' --exclude-dir='node_modules' --exclude-dir='log' --exclude-dir='vendor' --exclude-dir='tmp' --exclude-dir='temp'"
-case "${os}" in
-    darwin)
-        alias update="brew update"
-        alias upgrade="brew update && brew upgrade"
-        alias install="brew install"
-        alias uninstall="brew uninstall"
-        alias search="brew search"
-
-        alias qls="\ls -AG"
-        alias ls="\ls -ovAGh"
-        alias grep="ggrep ${grep_args}"
-        ;;
-    linux)
-        alias pbcopy="xsel --clipboard --input"
-        alias pbpaste="xsel --clipboard --output"
-
-        alias update="sudo apt update"
-        alias upgrade="sudo apt update && sudo apt upgrade"
-        alias install="sudo apt install"
-        alias uninstall="sudo apt purge"
-        alias search="apt list"
-
-        alias qls="\ls -A --color=auto"
-        alias ls="\ls -ovAh --color=auto"
-        alias grep="grep ${grep_args}"
-        ;;
-esac
 
 # Refresh Git before prompting
 function precmd {
