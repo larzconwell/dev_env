@@ -9,3 +9,6 @@ export JAVA_HOME="$(/usr/libexec/java_home)"
 export GOPRIVATE="github.com/movableink"
 
 eval "$(direnv hook zsh)"
+
+source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
+source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
