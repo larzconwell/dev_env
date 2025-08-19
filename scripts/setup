@@ -72,14 +72,14 @@ function packages_step {
 
     mise use --global --yes \
         go rust erlang elixir aqua:gleam-lang/gleam \
-        asdf:mise-plugins/mise-rebar asdf:mise-plugins/mise-elixir-ls
+        asdf:mise-plugins/mise-rebar
 
     brew install --cask firefox kitty rectangle keepingyouawake
     brew install \
         docker docker-compose colima grep gdb \
         shellcheck cmake clang-format wget curl \
         openssh openssl ack p7zip tree jq graphviz \
-        imagemagick helix zsh just ripgrep
+        imagemagick helix zsh just ripgrep elixir-ls
 
     rustup component add rust-analyzer
 

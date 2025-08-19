@@ -1,6 +1,5 @@
 [tools]
 "aqua:gleam-lang/gleam" = "latest"
-"asdf:mise-plugins/mise-elixir-ls" = "latest"
 "asdf:mise-plugins/mise-rebar" = "latest"
 elixir = "latest"
 erlang = "latest"
