@@ -76,8 +76,8 @@ function packages_step {
 
     brew install --cask firefox kitty rectangle keepingyouawake
     brew install \
-        docker docker-compose colima grep gdb \
-        shellcheck cmake clang-format wget curl \
+        docker docker-compose docker-buildx colima grep \
+        gdb shellcheck cmake clang-format wget curl \
         openssh openssl ack p7zip tree jq graphviz \
         imagemagick helix zsh just ripgrep elixir-ls
 
@@ -104,6 +104,7 @@ function packages_step {
 
     mkdir -p "${HOME}/.docker/cli-plugins"
     ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
+    ln -sfn "$(brew --prefix)/opt/docker-buildx/bin/docker-buildx" "${HOME}/.docker/cli-plugins/docker-buildx"
 }
 step "Installing packages" packages_step
 
