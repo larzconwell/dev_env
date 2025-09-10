@@ -72,7 +72,7 @@ function packages_step {
 
     mise use --global --yes \
         go rust erlang elixir aqua:gleam-lang/gleam \
-        asdf:mise-plugins/mise-rebar
+        asdf:mise-plugins/mise-rebar aqua:golangci/golangci-lint
 
     brew install --cask firefox kitty rectangle keepingyouawake
     brew install \
