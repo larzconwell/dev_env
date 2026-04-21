@@ -11,17 +11,8 @@ auto-format = true
 name = "gleam"
 auto-format = true
 
-[[language]]
-name = "odin"
-auto-format = true
-formatter = { command = "odinfmt-arm64-darwin -stdin" }
-language-servers = ["odin-lsp"]
-
 [language-server.golangci-lint-lsp]
 command = "golangci-lint-langserver"
 
 [language-server.golangci-lint-lsp.config]
 command = ["golangci-lint", "run", "--output.json.path", "stdout", "--show-stats=false", "--issues-exit-code=1"]
-
-[language-server.odin-lsp]
-command = "ols-arm64-darwin"
