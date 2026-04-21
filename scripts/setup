@@ -71,7 +71,7 @@ function packages_step {
     eval "$(mise activate bash)"
 
     mise use --global --yes \
-        go rust erlang elixir aqua:gleam-lang/gleam \
+        go rust erlang aqua:gleam-lang/gleam \
         asdf:mise-plugins/mise-rebar aqua:golangci/golangci-lint
 
     brew install --cask firefox kitty rectangle keepingyouawake zoom
@@ -79,7 +79,7 @@ function packages_step {
         docker docker-compose docker-buildx colima grep \
         gdb shellcheck cmake clang-format wget curl \
         openssh openssl ack p7zip tree jq graphviz \
-        imagemagick helix zsh just ripgrep elixir-ls
+        imagemagick helix zsh just ripgrep
 
     rustup component add rust-analyzer
 
