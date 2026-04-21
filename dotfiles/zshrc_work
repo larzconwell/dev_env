@@ -1,14 +1,1 @@
-alias rspec="bundle exec rspec"
-alias rake="bundle exec rake"
-alias rails="bundle exec rails"
-
-export PATH="/Applications/Postgres.app/Contents/Versions/latest/bin:${PATH}"
-export CPLUS_INCLUDE_PATH="${CPLUS_INCLUDE_PATH}:$(brew --prefix)/include"
-export LIBRARY_PATH="${LIBRARY_PATH}:$(brew --prefix)/lib"
-export JAVA_HOME="$(/usr/libexec/java_home)"
-export GOPRIVATE="github.com/movableink"
-
-eval "$(direnv hook zsh)"
-
-source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
-source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
+# empty

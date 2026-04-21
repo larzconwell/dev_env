@@ -74,7 +74,7 @@ function packages_step {
         go rust erlang elixir aqua:gleam-lang/gleam \
         asdf:mise-plugins/mise-rebar aqua:golangci/golangci-lint
 
-    brew install --cask firefox kitty rectangle keepingyouawake
+    brew install --cask firefox kitty rectangle keepingyouawake zoom
     brew install \
         docker docker-compose docker-buildx colima grep \
         gdb shellcheck cmake clang-format wget curl \
@@ -84,20 +84,6 @@ function packages_step {
     rustup component add rust-analyzer
 
     if [[ "${platform}" == "work" ]]; then
-        brew tap movableink/formulas
-
-        brew install --cask \
-            google-chrome postgres 1password \
-            zoom slack keybase tuple gcloud-cli
-
-        brew install \
-            redis icu4c libxslt geoip awscli prometheus buf \
-            gh kubectl k9s logcli direnv cassandra libpulsar \
-            movableink/formulas/qt movableink/formulas/qtwebkit \
-            movableink/formulas/apache-pulsar
-
-        mise use --global --yes \
-            python node ruby aqua:pypa/pipx pipx:yawsso
     fi
 
     echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
