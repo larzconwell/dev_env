@@ -30,16 +30,16 @@ bindkey "^[[F"  end-of-line
 bindkey "^[[3~" delete-char
 
 # Environment
-eval "$(/opt/homebrew/bin/brew shellenv)"
 export TERM="xterm-256color"
 export ZSHRC="${HOME}/.zshrc"
 export HISTFILE="${HOME}/.zsh_history"
 export HISTSIZE=3000
 export SAVEHIST=2000
-export PATH="/usr/local/bin:/usr/local/sbin:${HOME}/.local/bin:${PATH}"
+export PATH="${HOME}/.local/bin:${PATH}"
 export EDITOR="hx"
 export PAGER="less"
 export LANG="en_US.UTF-8"
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # Feature configuration
 zstyle :compinstall filename "${ZSHRC}"
@@ -52,9 +52,6 @@ zstyle ':vcs_info:git:*' actionformats '(%a:%b%c%u)'
 # Prompt
 PROMPT=" %{${fg[cyan]}%}%~%{${reset_color}%}%{${fg[magenta]}%}%1(v| %1v%f|)%{${reset_color}%} %# "
 RPROMPT="%(?..%{${fg[red]}%}%?)%{${reset_color}%}"
-
-# Kitty
-kitty + complete setup zsh | source /dev/stdin
 
 # Mise
 eval "$(mise activate zsh)"
@@ -169,12 +166,9 @@ function chpwd {
     qls
 }
 
-# Separate env and private setup
+# Separate configuration files
 if [[ -f "${HOME}/.zshrc_private" ]]; then
     source "${HOME}/.zshrc_private"
-fi
-if [[ -f "${HOME}/.zshrc_work" ]]; then
-    source "${HOME}/.zshrc_work"
 fi
 
 # Remove duplicate PATH entries.

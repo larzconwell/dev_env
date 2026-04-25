@@ -1,0 +1,8 @@
+[tools]
+go = "latest"
+rust = { version = "latest", profile = "default", components = "rust-analyzer" }
+node = "latest"
+erlang = "latest"
+"aqua:gleam-lang/gleam" = "latest"
+"aqua:golangci/golangci-lint" = "latest"
+"asdf:mise-plugins/mise-rebar" = "latest"

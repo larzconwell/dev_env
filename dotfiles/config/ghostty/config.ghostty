@@ -1,0 +1,28 @@
+theme = "Ayu Mirage"
+
+font-size = 13
+font-family = "Maple Mono Regular"
+font-family-bold = "Maple Mono Bold"
+font-family-italic = "Maple Mono Italic"
+font-family-bold-italic = "Maple Mono Bold Italic"
+
+unfocused-split-opacity = 0.7
+quit-after-last-window-closed = true
+
+cursor-style = "bar"
+cursor-click-to-move = true
+
+mouse-hide-while-typing = false
+focus-follows-mouse = true
+scrollback-limit = 30000
+copy-on-select = false
+
+keybind = "super+enter=new_split:auto"
+keybind = "super+.=new_split:right"
+keybind = "super+,=new_split:down"
+keybind = "super+/=toggle_split_zoom"
+keybind = "super+;=equalize_splits"
+keybind = "super+up=resize_split:up,15"
+keybind = "super+down=resize_split:down,15"
+keybind = "super+left=resize_split:left,15"
+keybind = "super+right=resize_split:right,15"

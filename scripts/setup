@@ -2,109 +2,44 @@
 set -e
 set -u
 
-platform="${1}"
-tmp="${TMPDIR:-/tmp}"
 name="dev_env"
 dir="${HOME}/Programming/${name}"
-output="${tmp}/${name}_setup"
 
-cyan="$(tput setaf 6)"
-red="$(tput setaf 1)"
-yellow="$(tput setaf 3)"
-green="$(tput setaf 2)"
-
-function message {
-    echo "${*}$(tput sgr0)"
-    echo "${*:2}" 1>>"${output}" 2>&1
+function print {
+    echo "$(tput setaf 6)${*}$(tput sgr0)"
 }
 
-function step {
-    if [[ "${1}" == "no_redirect" ]]; then
-        message $cyan "==> ${2}"
-        ${*:3}
-    else
-        message $cyan "==> ${1}"
-        ${*:2} 1>>"${output}" 2>&1
-    fi
+print "-> Requesting sudo access"
+sudo echo
 
-    message $green "--> Done"
-}
+print "-> Configuring brew"
+NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+eval "$(/opt/homebrew/bin/brew shellenv)"
+brew analytics off
 
-if [[ "${platform}" != "darwin" ]] && [[ "${platform}" != "work" ]]; then
-    message $red "Unknown platform given. Valid platforms are darwin, and work"
-    rm "${output}"
-    exit 1
-fi
+print "-> Installing git and pulling repo"
+brew install git
+git clone "git@github.com:larzconwell/${name}.git" "${dir}"
 
-message $yellow "!!! Detailed command output is being written to ${output}"
+print "-> Configuring dotfiles"
+"${dir}/scripts/link_files" "${dir}/dotfiles" "${HOME}" "."
 
-function base_step {
-    curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh | NONINTERACTIVE=1 bash
-    eval "$("/opt/homebrew/bin/brew shellenv)"
+print "-> Installing brew formulas"
+brew bundle install --file "${dir}/Brewfile"
 
-    brew analytics off
-    brew install git
-}
-step "Installing base requirements" base_step
+print "-> Installing mise tools"
+eval "$(mise activate bash)"
+mise install
 
-function clone_step {
-    git clone "git@github.com:larzconwell/${name}.git" "${dir}"
-}
-step "Cloning ${name}" clone_step
+print "-> Configuring Docker"
+mkdir -p "${HOME}/.docker"
+ln -sfn "$(brew --prefix)/lib/docker/cli-plugins" "${HOME}/.docker/cli-plugins"
+colima start --vm-type vz --kubernetes
 
-function link_step {
-    "${dir}/scripts/link_files" "${dir}/dotfiles" "${HOME}" "."
+print "-> Configuring root password"
+sudo passwd
 
-    if [[ "${platform}" != "work" ]]; then
-        rm "${HOME}/.zshrc_work"
-    fi
-}
-step "Linking dotfiles" link_step
-
-function fonts_step {
-    brew install --cask --fontdir=/Library/Fonts font-maple-mono
-}
-step "Installing fonts" fonts_step
-
-function packages_step {
-    brew install mise
-    eval "$(mise activate bash)"
-
-    mise use --global --yes \
-        go rust erlang aqua:gleam-lang/gleam \
-        asdf:mise-plugins/mise-rebar aqua:golangci/golangci-lint
-
-    brew install --cask firefox kitty rectangle keepingyouawake zoom
-    brew install \
-        docker docker-compose docker-buildx colima grep \
-        gdb shellcheck cmake clang-format wget curl \
-        openssh openssl ack p7zip tree jq graphviz \
-        imagemagick helix zsh just ripgrep
-
-    rustup component add rust-analyzer
-
-    if [[ "${platform}" == "work" ]]; then
-    fi
-
-    echo "$(brew --prefix)/bin/zsh" | sudo tee -a /etc/shells 1>/dev/null 2>&1
-
-    mkdir -p "${HOME}/.docker/cli-plugins"
-    ln -sfn "$(brew --prefix)/opt/docker-compose/bin/docker-compose" "${HOME}/.docker/cli-plugins/docker-compose"
-    ln -sfn "$(brew --prefix)/opt/docker-buildx/bin/docker-buildx" "${HOME}/.docker/cli-plugins/docker-buildx"
-}
-step "Installing packages" packages_step
-
-function shell_step {
-    chsh -s "$(which zsh)"
-    sudo chsh -s "$(which zsh)"
-}
-step no_redirect "Configuring default shell" shell_step
-
-function root_passwd_step {
-    sudo passwd
-}
-step no_redirect "Configuring root password" root_passwd_step
-
-message $green "==> Setup complete, a restart is advised"
-message $green "==> Additional manual steps should be taken:"
-message $green "-->   Remove NVM changes made in ${HOME}/.zshrc"
+print "-> Configuring shell"
+which zsh | sudo tee -a /etc/shells 1>/dev/null 2>&1
+chsh -s "$(which zsh)"
+sudo chsh -s "$(which zsh)"
