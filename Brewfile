@@ -1,7 +1,7 @@
 cask "font-maple-mono", args: { fontdir: "/Library/Fonts" }
 cask "rectangle"
 cask "keepingyouawake"
-cask "firefox"
+cask "vivaldi"
 cask "zoom"
 cask "ghostty"
 
