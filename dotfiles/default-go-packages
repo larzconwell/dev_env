@@ -3,3 +3,4 @@ golang.org/x/tools/cmd/goimports
 golang.org/x/tools/gopls
 github.com/go-delve/delve/cmd/dlv
 github.com/nametake/golangci-lint-langserver
+github.com/google/pprof
